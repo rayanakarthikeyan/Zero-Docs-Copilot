@@ -2,8 +2,6 @@
 
 # Zero-Docs Chaos Copilot
 
-**Submission for the Razorpay AI Buildathon — Open Track**
-
 ## 1. Problem Introduction
 For API-first platforms such as Razorpay, Developer Experience (DX) directly correlates to revenue. When merchants attempt to integrate payment gateways, their engineering teams face significant friction. They must context-switch to read dense documentation, understand authentication mechanisms, and learn platform-specific SDK conventions. If the integration process takes weeks instead of hours, the merchant is highly likely to abandon the platform in favor of out-of-the-box alternatives. The fundamental problem is that reading documentation and writing boilerplate integration code is inefficient and error-prone.
 
