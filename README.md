@@ -1,6 +1,4 @@
-<div align="center">
-  <img src="./public/hero-banner.png" alt="Zero-Docs Agent Hero" width="100%" />
-</div>
+
 
 # Zero-Docs Chaos Copilot
 
