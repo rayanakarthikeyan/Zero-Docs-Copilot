@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://cdn.razorpay.com/static/assets/buildathon/art/hero-night.webp" alt="Zero-Docs Agent Hero" width="100%" />
+  <img src="./public/hero-banner.png" alt="Zero-Docs Agent Hero" width="100%" />
 </div>
 
 # Zero-Docs Chaos Copilot
