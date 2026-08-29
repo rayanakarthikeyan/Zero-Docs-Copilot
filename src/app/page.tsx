@@ -665,7 +665,7 @@ export default function Home() {
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <ShieldCheck size={16} color="var(--success-color)" style={{ marginTop: "4px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "13px" }}>Simulated Chaos Engine for static security auditing</span>
+                    <span style={{ fontSize: "13px" }}>True Multi-Agent Chaos Engine for static security auditing and auto-healing</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <Code size={16} color="var(--success-color)" style={{ marginTop: "4px", flexShrink: 0 }} />

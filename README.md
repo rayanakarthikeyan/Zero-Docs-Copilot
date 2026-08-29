@@ -33,8 +33,8 @@ Zero-Docs AI is an enterprise-grade Integration Copilot that eliminates the need
 ### Key Features
 - **Live RAG (Retrieval-Augmented Generation) Sync:** We do not rely on stale LLM training data. Zero-Docs simulates pulling live API schemas (e.g., Razorpay v2.3.1) to guarantee generated code matches current documentation.
 - **Multi-File Architectural Output:** Real integrations require frontend components, backend routes, and webhook handlers. Zero-Docs strictly enforces a 3-file architectural output to instantly scaffold a complete full-stack integration.
-- **The Chaos Engine (Automated Security Audit):** Code generation is only half the battle. Our built-in "Security Audit" runs simulated static security audits on the generated code.
-- **Integration Test Simulation:** The platform features an integrated Jest simulation terminal that proves the generated architecture handles both valid orders and rejects forged webhook payloads (x-razorpay-signature validation).
+- **The Chaos Engine (True Multi-Agent Auditing):** Code generation is only half the battle. Our built-in "Chaos Engine" operates as a **deterministic static gatekeeper**. It runs real Node.js AST parsing to detect missing cryptographic signatures (`crypto.createHmac`), proving that we don't blindly trust AI output.
+- **Autonomous Auto-Healing:** If the gatekeeper detects a vulnerability (e.g. signature forgery), it automatically deploys a second, specialized AI Security Agent to patch the vulnerable code and re-submit it for validation. This creates a true, self-correcting multi-agent loop.
 
 ## 4. Human-Centric Design
 The interface of Zero-Docs was designed specifically for elite software engineers, prioritizing efficiency, transparency, and immediate visual feedback.
@@ -49,8 +49,13 @@ Zero-Docs is built to production standards, ensuring high performance and mainta
 - **Prompt Engineering as Code:** The AI instructions are strictly formatted to prevent hallucination. The model is forced to utilize official SDKs and output strictly validated JSON, ensuring the output is immediately compilable.
 
 ### The Enterprise Vision (Production Architecture)
-While this buildathon submission focuses on a high-fidelity frontend and DX prototype, the production backend is designed around three core pillars:
-1. **Firecracker MicroVM Execution:** To safely run the Chaos Engine against AI-generated code, the code is deployed into ephemeral AWS Firecracker MicroVMs. This guarantees true sandbox isolation.
+Zero-Docs AI is fundamentally built around a **True Multi-Agent Architecture**:
+1. **The Generator Agent:** Creates the initial multi-file codebase based on live API docs.
+2. **The Deterministic Gatekeeper:** A hardcoded static analyzer that prevents hallucinatory vulnerabilities from reaching production.
+3. **The Healer Agent:** An isolated LLM agent strictly tasked with patching code that fails the gatekeeper.
+
+In a fully scaled production environment, this loop would be executed inside:
+1. **Firecracker MicroVM Execution:** To safely run the third-party generated code, it would be deployed into ephemeral AWS Firecracker MicroVMs.
 2. **AST (Abstract Syntax Tree) Stitching:** The LLM does not generate raw text. It outputs AST JSON which a deterministic compiler uses to stitch the multi-file project together, completely preventing syntax errors and variable drift across files.
 3. **Continuous Vector Syncing:** A background cron-job parses Razorpay's live OpenAPI YAML specs into semantic chunks, updating the Pinecone vector database daily to eliminate deprecated API hallucinations.
 
@@ -58,20 +63,22 @@ While this buildathon submission focuses on a high-fidelity frontend and DX prot
 sequenceDiagram
     participant Dev as Developer
     participant UI as Zero-Docs UI
-    participant AI as Gemini 2.5 Agent
-    participant Sim as Security Audit Sandbox
+    participant GenAgent as Generator Agent
+    participant Audit as Deterministic Gatekeeper
+    participant HealAgent as Healer Agent
 
     Dev->>UI: Prompt: "Next.js Subscription Checkout"
-    UI->>AI: Fetch Live Schema & Generate Integration
-    AI-->>UI: Returns Strict Multi-File JSON (Frontend, Backend, Webhook)
+    UI->>GenAgent: Fetch Schema & Generate Architecture
+    GenAgent-->>UI: Returns Strict Multi-File JSON (Missing HMAC)
     UI->>Dev: Renders Full-Stack Code
     
-    Note over Dev,Sim: The Security Audit
-    Dev->>Sim: Clicks "Run Chaos Engine"
-    Sim-xUI: Simulates 500 Error (Missing HMAC Signature)
-    UI->>AI: Intercepts Stack Trace & Auto-Heals Code
-    AI-->>UI: Generates Secure Code (crypto.createHmac added)
-    Sim->>Dev: Integration Tests Pass (Green)
+    Note over Dev,HealAgent: The Chaos Engine Loop
+    Dev->>UI: Clicks "Run Chaos Engine"
+    UI->>Audit: POST /api/audit (Analyze Code AST)
+    Audit-->>UI: [FATAL] Missing HMAC Signature Verification
+    UI->>HealAgent: POST /api/heal (Vulnerability Report + Code)
+    HealAgent-->>UI: Generates Secure Code (crypto.createHmac enforced)
+    UI->>Dev: Code Hot-Reloaded. Architecture Secured.
 ```
 
 ## 6. Implementation and Setup
