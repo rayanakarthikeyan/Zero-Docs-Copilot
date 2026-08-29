@@ -299,8 +299,8 @@ export default function Home() {
           {currentView === "copilot" ? (
             <>
               <header style={{ marginBottom: "40px" }}>
-                <h1 style={{ fontSize: "32px", marginBottom: "8px" }}>Integration Copilot</h1>
-                <p style={{ fontSize: "16px" }}>Describe your integration. The AI will read the docs and write the code for you.</p>
+                <h1 style={{ fontSize: "32px", marginBottom: "8px" }}>Zero-Docs AI Copilot</h1>
+                <p style={{ fontSize: "16px", color: "var(--text-secondary)" }}>Describe your integration. The AI will read the docs and write the code for you.</p>
               </header>
 
               <div className="card" style={{ marginBottom: "32px", background: "linear-gradient(145deg, rgba(22,22,22,1) 0%, rgba(10,10,10,1) 100%)" }}>

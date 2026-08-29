@@ -1,6 +1,6 @@
 {
-  "name": "buildathon",
-  "version": "0.1.0",
+  "name": "zero-docs-ai",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
