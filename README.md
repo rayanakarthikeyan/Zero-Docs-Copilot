@@ -33,13 +33,13 @@ Zero-Docs AI is an enterprise-grade Integration Copilot that eliminates the need
 ### Key Features
 - **Live RAG (Retrieval-Augmented Generation) Sync:** We do not rely on stale LLM training data. Zero-Docs simulates pulling live API schemas (e.g., Razorpay v2.3.1) to guarantee generated code matches current documentation.
 - **Multi-File Architectural Output:** Real integrations require frontend components, backend routes, and webhook handlers. Zero-Docs strictly enforces a 3-file architectural output to instantly scaffold a complete full-stack integration.
-- **The Chaos Engine (Automated Security Audit):** Code generation is only half the battle. Our built-in "Live Sandbox" runs simulated static security audits on the generated code.
+- **The Chaos Engine (Automated Security Audit):** Code generation is only half the battle. Our built-in "Security Audit" runs simulated static security audits on the generated code.
 - **Integration Test Simulation:** The platform features an integrated Jest simulation terminal that proves the generated architecture handles both valid orders and rejects forged webhook payloads (x-razorpay-signature validation).
 
 ## 4. Human-Centric Design
 The interface of Zero-Docs was designed specifically for elite software engineers, prioritizing efficiency, transparency, and immediate visual feedback.
 - **Terminal-Inspired Aesthetics:** The UI utilizes dark mode, monospace typography, and syntax highlighting to reduce cognitive load, making it feel like a natural extension of the developer's IDE.
-- **Instant Code Previews:** Developers get instant visual validation of the generated code via the Live Sandbox tab.
+- **Instant Code Previews:** Developers get instant visual validation of the generated code via the built-in editor.
 - **Telemetry Dashboard:** Live simulated metrics project a high-scale production environment, building immediate trust in the tool's enterprise capabilities.
 
 ## 5. Engineering & Architecture
@@ -48,17 +48,23 @@ Zero-Docs is built to production standards, ensuring high performance and mainta
 - **Strict Separation of Concerns:** Cleanly separates the presentation layer (React components) from the AI orchestration logic (Next.js API routes).
 - **Prompt Engineering as Code:** The AI instructions are strictly formatted to prevent hallucination. The model is forced to utilize official SDKs and output strictly validated JSON, ensuring the output is immediately compilable.
 
+### The Enterprise Vision (Production Architecture)
+While this buildathon submission focuses on a high-fidelity frontend and DX prototype, the production backend is designed around three core pillars:
+1. **Firecracker MicroVM Execution:** To safely run the Chaos Engine against AI-generated code, the code is deployed into ephemeral AWS Firecracker MicroVMs. This guarantees true sandbox isolation.
+2. **AST (Abstract Syntax Tree) Stitching:** The LLM does not generate raw text. It outputs AST JSON which a deterministic compiler uses to stitch the multi-file project together, completely preventing syntax errors and variable drift across files.
+3. **Continuous Vector Syncing:** A background cron-job parses Razorpay's live OpenAPI YAML specs into semantic chunks, updating the Pinecone vector database daily to eliminate deprecated API hallucinations.
+
 ```mermaid
 sequenceDiagram
     participant Dev as Developer
     participant UI as Zero-Docs UI
     participant AI as Gemini 2.5 Agent
-    participant Sim as Live Sandbox
+    participant Sim as Security Audit Sandbox
 
     Dev->>UI: Prompt: "Next.js Subscription Checkout"
     UI->>AI: Fetch Live Schema & Generate Integration
     AI-->>UI: Returns Strict Multi-File JSON (Frontend, Backend, Webhook)
-    UI->>Dev: Renders Full-Stack Code & UI Sandbox
+    UI->>Dev: Renders Full-Stack Code
     
     Note over Dev,Sim: The Security Audit
     Dev->>Sim: Clicks "Run Chaos Engine"
@@ -99,7 +105,7 @@ sequenceDiagram
    ```
 
 5. **Usage**
-   Open `http://localhost:3000`. Enter an integration request (e.g., "Build a standard checkout flow"), review the generated multi-file architecture, and utilize the Live Sandbox and Chaos Engine to test security resilience.
+   Open `http://localhost:3000`. Enter an integration request (e.g., "Build a standard checkout flow"), review the generated multi-file architecture, and utilize the Security Audit and Chaos Engine to test security resilience.
 
 ## 7. License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
