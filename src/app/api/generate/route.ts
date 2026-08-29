@@ -20,9 +20,7 @@ export async function POST(req: Request) {
          - A frontend component (e.g. Checkout.tsx)
          - A backend route to create the order
          - A backend webhook handler
-      2. The naive "unhealed" code MUST be missing webhook signature verification.
-      3. The "healed" code MUST strictly implement: \`crypto.createHmac('sha256', secret).update(body).digest('hex')\` for webhook verification.
-      4. The "healed" code MUST include \`idempotency_key\` headers where applicable.
+      2. The naive generated code MUST intentionally omit webhook signature verification (do not use crypto.createHmac) so that the Chaos Engine can catch it.
       
       Return STRICT raw JSON (no markdown blocks) matching this schema exactly:
       {
@@ -31,12 +29,6 @@ export async function POST(req: Request) {
           { "name": "frontend/Checkout.tsx", "language": "typescript", "content": "..." },
           { "name": "backend/create-order.ts", "language": "typescript", "content": "..." },
           { "name": "backend/webhook.ts", "language": "typescript", "content": "Naive webhook without validation..." }
-        ],
-        "simulatedError": "[FATAL] Webhook Signature Mismatch: Unauthorized access attempt detected.",
-        "healedFiles": [
-          { "name": "frontend/Checkout.tsx", "language": "typescript", "content": "..." },
-          { "name": "backend/create-order.ts", "language": "typescript", "content": "..." },
-          { "name": "backend/webhook.ts", "language": "typescript", "content": "Robust webhook WITH crypto.createHmac verification..." }
         ]
       }
     `;

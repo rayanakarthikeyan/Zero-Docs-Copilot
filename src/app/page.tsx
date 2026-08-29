@@ -143,55 +143,63 @@ export default function Home() {
   };
 
   const simulateChaos = async () => {
-    if (!result || isSimulating) return;
+    if (isSimulating || isHealed || !result) return;
     setIsSimulating(true);
-    setActiveTab("code");
-    
-    let sequence = [];
-    if (attackVector === "signature") {
-      sequence = [
-        { text: "> Initializing Chaos Attack: Webhook Signature Forgery...", delay: 800 },
-        { text: "> Injecting malicious payload into POST /api/webhook...", delay: 1000 },
-        { text: `[CRASH] FATAL ERROR: ${result?.simulatedError || "Missing crypto.createHmac verification"}`, delay: 1200 },
-        { text: "[AGENT] Intercepting vulnerability... Unsecured Webhook endpoint detected.", delay: 1000 },
-        { text: "[AGENT] Enforcing strict Razorpay Node.js SDK rules... Injecting cryptographic signature verification...", delay: 1500 },
-        { text: "HEAL", delay: 100 }, 
-        { text: "[SUCCESS] Architecture secured. crypto.createHmac enforced. Zero-Day threat mitigated.", delay: 500 }
-      ];
-    } else if (attackVector === "idempotency") {
-      sequence = [
-        { text: "> Initializing Chaos Attack: High Latency Network Timeout...", delay: 800 },
-        { text: "> Simulating double-click on payment button (Retry logic active)...", delay: 1000 },
-        { text: `[CRASH] FATAL ERROR: Duplicate Order Created. Missing Idempotency Key.`, delay: 1200 },
-        { text: "[AGENT] Intercepting vulnerability... No x-idempotency-key header detected.", delay: 1000 },
-        { text: "[AGENT] Rewriting API payload to enforce uuid v4 idempotency keys...", delay: 1500 },
-        { text: "HEAL", delay: 100 }, 
-        { text: "[SUCCESS] Architecture secured. Idempotency enforced. Double-charges prevented.", delay: 500 }
-      ];
-    } else {
-      sequence = [
-        { text: "> Initializing Chaos Attack: Currency Decimal Manipulation...", delay: 800 },
-        { text: "> Injecting fractional paise into amount payload: 500.50...", delay: 1000 },
-        { text: `[CRASH] FATAL ERROR: Invalid amount. Razorpay expects integer paise.`, delay: 1200 },
-        { text: "[AGENT] Intercepting vulnerability... Float passed to integer field.", delay: 1000 },
-        { text: "[AGENT] Enforcing Math.round(amount * 100) formatting...", delay: 1500 },
-        { text: "HEAL", delay: 100 }, 
-        { text: "[SUCCESS] Architecture secured. Decimal manipulation thwarted.", delay: 500 }
-      ];
-    }
-
     setLogs([]);
     
-    for (const step of sequence) {
-      if (step.text === "HEAL") {
-        setIsHealed(true);
-        continue;
-      }
-      await new Promise((r) => setTimeout(r, step.delay));
-      setLogs((prev) => [...prev, step.text]);
-    }
+    const addLog = async (msg: string, delay: number = 800) => {
+        setLogs(prev => [...prev, msg]);
+        await new Promise(r => setTimeout(r, delay));
+    };
+
+    await addLog("> Initializing Deterministic Static Gatekeeper...", 1000);
     
-    setIsSimulating(false);
+    try {
+        const response = await fetch('/api/audit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ files: result.files, attackVector })
+        });
+        const auditResult = await response.json();
+        
+        if (auditResult.status === "passed") {
+            await addLog("[SUCCESS] Code passed security audit. No vulnerabilities found.");
+            setIsSimulating(false);
+            return;
+        }
+        
+        await addLog(`[CRASH] ${auditResult.vulnerability}`, 1000);
+        await addLog("[SYSTEM] Deploying AI Security Agent to patch vulnerability...", 1500);
+        
+        // Check if we are running a blueprint (which is statically hardcoded) to avoid burning API calls,
+        // but if it's dynamic generation, use the real agent.
+        if (result.healedFiles && result.plan.includes('Instantly deployed')) {
+            await addLog("[AGENT] Intercepting vulnerability stack trace...", 1000);
+            await addLog("[AGENT] Synthesizing cryptographically secure patch...", 1000);
+            setIsHealed(true);
+            await addLog("[SUCCESS] Patch deployed. Architecture secured.");
+        } else {
+            const healResponse = await fetch('/api/heal', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ files: result.files, vulnerability: auditResult.vulnerability, attackVector })
+            });
+            
+            const healData = await healResponse.json();
+            
+            if (healData.error) throw new Error(healData.error);
+            
+            setResult(prev => ({ ...prev, healedFiles: healData.healedFiles }));
+            setIsHealed(true);
+            await addLog("[AGENT] " + healData.plan, 800);
+            await addLog("[SUCCESS] Security patch applied. Vulnerability mitigated.");
+        }
+
+    } catch (e: any) {
+        await addLog("[ERROR] " + e.message);
+    } finally {
+        setIsSimulating(false);
+    }
   };
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
