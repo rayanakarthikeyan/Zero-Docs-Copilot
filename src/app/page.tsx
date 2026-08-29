@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Terminal, Code, Activity, ShieldCheck, Zap, RefreshCw, AlertTriangle, ShieldAlert, FileCode2, Copy, CheckCircle, Download, FileArchive, X } from 'lucide-react';
+import { Terminal, Code, Play, CheckCircle, Loader2, Copy, FileCode2, AlertTriangle, ShieldCheck, Zap, Trash2, Clock, Activity, ShieldAlert, Lock, Download, FileArchive, X, Info, RefreshCw } from 'lucide-react';
 import JSZip from 'jszip';
 
 export default function Home() {
