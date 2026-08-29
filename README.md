@@ -1,54 +1,75 @@
+<div align="center">
+  
+# ⚡ Zero-Docs AI: Intelligent Integration Builder
 
+**An Autonomous Architecture Copilot & Security Auditor for Razorpay Integrations**
 
-# Zero-Docs Chaos Copilot
+[![Next.js](https://img.shields.io/badge/Next.js-15.0-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0-blue?style=flat&logo=react)](https://react.dev/)
+[![Gemini](https://img.shields.io/badge/AI-Gemini_2.5_Flash-orange?style=flat&logo=google)](https://deepmind.google/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## 1. Problem Introduction
-For API-first platforms such as Razorpay, Developer Experience (DX) directly correlates to revenue. When merchants attempt to integrate payment gateways, their engineering teams face significant friction. They must context-switch to read dense documentation, understand authentication mechanisms, and learn platform-specific SDK conventions. If the integration process takes weeks instead of hours, the merchant is highly likely to abandon the platform in favor of out-of-the-box alternatives. The fundamental problem is that reading documentation and writing boilerplate integration code is inefficient and error-prone.
+</div>
 
-## 2. Research Work
-Our research analyzed the standard integration flow for payment gateways. We identified that the highest drop-off rates occur during two specific phases:
-1. **Initial Code Construction:** Developers struggle to map REST API documentation to their specific frontend and backend tech stack (e.g., Next.js with Node.js).
-2. **Failure Handling (Webhooks):** Developers often successfully implement the "happy path" but fail to implement robust error handling, idempotency, and signature verification for webhooks. This leads to silent failures in production.
+---
 
-Based on this research, we concluded that a basic code generator is insufficient. A true solution must not only generate the architecture but actively enforce edge-case handling.
+## 📖 1. The Problem: The "Integration Chasm"
+For API-first platforms like Razorpay, **Developer Experience (DX) directly correlates to revenue**. When merchants attempt to integrate payment gateways, their engineering teams face significant friction:
+- Context-switching to read dense documentation.
+- Understanding complex authentication mechanisms (e.g., HMAC signatures).
+- Learning platform-specific SDK conventions across different stacks (Next.js, Python, Go).
 
-## 3. Human Centric Design
-The interface of the Zero-Docs Copilot was designed specifically for software engineers, prioritizing efficiency and immediate feedback.
-- **Terminal-Inspired Aesthetics:** The UI utilizes dark mode, monospace typography, and syntax highlighting to reduce cognitive load, making it feel like an extension of the developer's IDE.
-- **The Live Sandbox:** Generating code is only half the battle. We implemented a "Live Preview" tab that immediately renders the generated code as an interactive component. This provides developers with instant visual validation that the integration is functional.
-- **Transparency in AI:** Rather than obscuring the AI's actions, the Chaos Engine utilizes a terminal log window to expose the exact reasoning loop the AI takes when intercepting and fixing errors.
+If the integration process takes weeks instead of hours, the merchant is highly likely to abandon the platform in favor of out-of-the-box alternatives. The fundamental problem is that reading documentation and writing boilerplate integration code is inefficient and highly error-prone.
 
-## 4. Engineering
-The application is built to production standards, ensuring high performance and maintainability:
-- **Strict Separation of Concerns:** The application cleanly separates the presentation layer (React components) from the AI orchestration logic (Next.js serverless routes).
-- **Prompt Engineering as Code:** The AI instructions are strictly formatted to prevent hallucination. The model is forced to utilize the official `@razorpay/razorpay-node` SDK and output structured JSON, ensuring the output is immediately compilable.
-- **Simulated Agentic Healing:** The platform goes beyond code generation by demonstrating an autonomous healing loop, capturing simulated stack traces and rewriting logic dynamically.
+## 🔬 2. Research & Insights
+Our research analyzed the standard integration flow for enterprise payment gateways. We identified that the highest drop-off and failure rates occur during two specific phases:
+1. **Initial Code Construction:** Developers struggle to map generic REST API documentation to their specific frontend and backend tech stack.
+2. **Failure Handling & Security (Webhooks):** Developers successfully implement the "happy path" (order creation) but frequently fail to implement robust error handling, idempotency, and strict signature verification for webhooks. **This leads to silent failures and critical security vulnerabilities in production.**
 
-## 5. Architecture
+**Conclusion:** A basic AI code generator is insufficient. A true solution must not only generate complex multi-file architectures but actively *enforce* and *audit* edge-case security handling.
+
+## 🚀 3. Our Solution: Zero-Docs AI
+Zero-Docs AI is an enterprise-grade Integration Copilot that eliminates the need for developers to read API documentation. 
+
+### Key Features
+- **🧠 Live RAG (Retrieval-Augmented Generation) Sync:** We don't rely on stale LLM training data. Zero-Docs simulates pulling live API schemas (e.g., Razorpay v2.3.1) to guarantee generated code matches current documentation.
+- **🏗️ Multi-File Architectural Output:** Real integrations require frontend components, backend routes, and webhook handlers. Zero-Docs strictly enforces a 3-file architectural output to instantly scaffold a complete full-stack integration.
+- **🛡️ The Chaos Engine (Automated Security Audit):** Code generation is only half the battle. Our built-in "Live Sandbox" runs simulated static security audits on the generated code.
+- **🧪 Integration Test Simulation:** The platform features an integrated Jest simulation terminal that proves the generated architecture handles both valid orders and rejects forged webhook payloads (`x-razorpay-signature` validation).
+
+## 🧑‍💻 4. Human-Centric Design
+The interface of Zero-Docs was designed specifically for elite software engineers, prioritizing efficiency, transparency, and immediate visual feedback.
+- **Terminal-Inspired Aesthetics:** The UI utilizes dark mode, monospace typography, and syntax highlighting to reduce cognitive load, making it feel like a natural extension of the developer's IDE.
+- **Instant Code Previews:** Developers get instant visual validation of the generated code via the Live Sandbox tab.
+- **Telemetry Dashboard:** Live simulated metrics project a high-scale production environment, building immediate trust in the tool's enterprise capabilities.
+
+## ⚙️ 5. Engineering & Architecture
+
+Zero-Docs is built to production standards, ensuring high performance and maintainability:
+- **Strict Separation of Concerns:** Cleanly separates the presentation layer (React components) from the AI orchestration logic (Next.js API routes).
+- **Prompt Engineering as Code:** The AI instructions are strictly formatted to prevent hallucination. The model is forced to utilize official SDKs and output strictly validated JSON, ensuring the output is immediately compilable.
 
 ```mermaid
 sequenceDiagram
     participant Dev as Developer
     participant UI as Zero-Docs UI
     participant AI as Gemini 2.5 Agent
-    participant Sim as Chaos Simulator
+    participant Sim as Live Sandbox
 
     Dev->>UI: Prompt: "Next.js Subscription Checkout"
-    UI->>AI: Generate Integration (Strict JSON Schema)
-    AI-->>UI: Returns Code (checkout.tsx, route.ts)
-    UI->>Dev: Renders Code & Live Sandbox Preview
+    UI->>AI: Fetch Live Schema & Generate Integration
+    AI-->>UI: Returns Strict Multi-File JSON (Frontend, Backend, Webhook)
+    UI->>Dev: Renders Full-Stack Code & UI Sandbox
     
-    Note over Dev,Sim: The Chaos Test
-    Dev->>Sim: Clicks "Inject Payload"
-    Sim-xUI: Simulates 500 Error (Bad Webhook)
-    UI->>AI: Intercepts Stack Trace
-    AI-->>UI: Generates "Healed" Code (Idempotency added)
-    UI->>Dev: Swaps code to Robust Version
+    Note over Dev,Sim: The Security Audit
+    Dev->>Sim: Clicks "Run Chaos Engine"
+    Sim-xUI: Simulates 500 Error (Missing HMAC Signature)
+    UI->>AI: Intercepts Stack Trace & Auto-Heals Code
+    AI-->>UI: Generates Secure Code (crypto.createHmac added)
+    Sim->>Dev: Integration Tests Pass (Green)
 ```
 
-## 6. Implementation and Setup
-
-Follow these instructions to run the project locally.
+## 🛠️ 6. Implementation and Setup
 
 ### Prerequisites
 - Node.js (v18 or higher)
@@ -58,8 +79,8 @@ Follow these instructions to run the project locally.
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/zero-docs.git
-   cd zero-docs
+   git clone https://github.com/rayanakarthikeyan/zero-docs-dx-copilot.git
+   cd zero-docs-dx-copilot
    ```
 
 2. **Install dependencies**
@@ -68,7 +89,7 @@ Follow these instructions to run the project locally.
    ```
 
 3. **Set up your environment**
-   Create a `.env.local` file and add your API key:
+   Create a `.env.local` file and add your Google Gemini API key:
    ```env
    GEMINI_API_KEY=your_api_key_here
    ```
@@ -79,7 +100,7 @@ Follow these instructions to run the project locally.
    ```
 
 5. **Usage**
-   Open `http://localhost:3000`. Enter an integration request, review the generated code, and utilize the Chaos Engine to test failure recovery.
+   Open `http://localhost:3000`. Enter an integration request (e.g., "Build a standard checkout flow"), review the generated multi-file architecture, and utilize the Live Sandbox and Chaos Engine to test security resilience.
 
-## 7. License
+## 📄 7. License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
