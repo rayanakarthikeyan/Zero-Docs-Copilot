@@ -239,7 +239,7 @@ export default function Home() {
 
       <main className="main-content">
         <header className="topbar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div className="topbar-metrics" style={{ display: "flex", gap: "24px" }}>
+          <div className="topbar-metrics" style={{ display: "flex", gap: "24px", cursor: "pointer" }} onClick={() => alert("Source Information:\n\nThese metrics are live simulated telemetry representing a production environment scaling to process thousands of Razorpay webhooks per second.")}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--success-color)", fontSize: "13px", fontWeight: 600, background: "rgba(46, 160, 67, 0.1)", padding: "6px 12px", borderRadius: "20px", border: "1px solid rgba(46, 160, 67, 0.2)" }}>
               <Activity size={14} /> Webhooks Secured: {telemetry.webhooks.toLocaleString()}
             </div>
@@ -288,13 +288,13 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div style={{ position: "relative", marginBottom: "16px" }}>
-                  <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, padding: "16px", pointerEvents: "none", color: "var(--text-secondary)", fontSize: "15px", whiteSpace: "pre-wrap", zIndex: 1, overflow: "hidden" }}>
+                <div style={{ position: "relative", marginBottom: "16px", backgroundColor: "rgba(0,0,0,0.4)", borderRadius: "8px", border: "1px solid var(--border-color)" }}>
+                  <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, padding: "16px", pointerEvents: "none", color: "var(--text-secondary)", fontSize: "15px", whiteSpace: "pre-wrap", zIndex: 1, overflow: "hidden", fontFamily: "inherit" }}>
                     <span style={{ color: "transparent" }}>{prompt}</span>{ghostText}
                   </div>
                   <textarea 
                     placeholder="e.g. Build a Razorpay subscription checkout flow for a SaaS product..."
-                    style={{ position: "relative", width: "100%", height: "120px", padding: "16px", borderRadius: "8px", backgroundColor: "rgba(0,0,0,0.4)", border: "1px solid var(--border-color)", color: "white", fontSize: "15px", resize: "vertical", outline: "none", transition: "all 0.2s", zIndex: 2 }}
+                    style={{ position: "relative", width: "100%", height: "120px", padding: "16px", backgroundColor: "transparent", border: "none", color: "white", fontSize: "15px", resize: "vertical", outline: "none", transition: "all 0.2s", zIndex: 2, fontFamily: "inherit" }}
                     value={prompt}
                     onChange={handlePromptChange}
                     onKeyDown={handleKeyDown}
