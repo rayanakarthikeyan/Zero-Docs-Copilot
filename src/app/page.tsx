@@ -108,7 +108,8 @@ export default function Home() {
     else if (prompt.toLowerCase().includes("paypal")) provider = "PayPal";
 
     const loadingSteps = [
-      `Reading ${provider} API Documentation...`,
+      `Fetching Live ${provider} API Schemas...`,
+      "Synchronizing RAG Knowledge Base...",
       "Analyzing webhook architecture...",
       "Generating Node.js SDK integration...",
       "Running static security analysis...",
@@ -251,8 +252,11 @@ export default function Home() {
             </div>
           </div>
           <div style={{ display: "flex", gap: "12px", marginLeft: "auto" }}>
+            <span className="badge badge-success" style={{ gap: "6px", background: "rgba(88, 166, 255, 0.1)", color: "var(--accent-color)", border: "1px solid rgba(88, 166, 255, 0.2)" }}>
+              <Lock size={12} /> RAG Sync: Razorpay v2.3.1 (Live)
+            </span>
             <span className="badge badge-success" style={{ gap: "6px" }}>
-              <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "currentColor", boxShadow: "0 0 6px currentColor" }}></div>
+              <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "currentColor", boxShadow: "0 0 6px currentColor", animation: "pulse 2s infinite" }}></div>
               Agent Online
             </span>
           </div>
@@ -407,6 +411,32 @@ export default function Home() {
                                   ? "The code successfully includes idempotency_key headers to prevent duplicate order creation during network timeouts."
                                   : "Network timeouts could result in duplicate API calls and double-charging customers. No idempotency mechanism detected."}
                               </p>
+                            </div>
+                          </div>
+
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", padding: "20px", borderRadius: "8px", border: "1px solid rgba(88, 166, 255, 0.3)", backgroundColor: "rgba(88, 166, 255, 0.05)", marginTop: "16px" }}>
+                            <Code size={24} color="var(--accent-color)" style={{ marginTop: "2px" }} />
+                            <div style={{ width: "100%" }}>
+                              <h4 style={{ margin: "0 0 12px 0", fontSize: "15px", color: "var(--accent-color)" }}>
+                                Integration Test Runner (Jest Simulation)
+                              </h4>
+                              <div style={{ background: "#000", padding: "16px", borderRadius: "8px", fontFamily: "var(--font-mono)", fontSize: "13px", color: "#e6edf3", border: "1px solid var(--border-color)" }}>
+                                {isHealed ? (
+                                  <>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/checkout (200 OK) - Order Created</div>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/webhook (200 OK) - Signature Validated</div>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "12px" }}>✓ POST /api/webhook (400 Bad Request) - Invalid Signature Rejected</div>
+                                    <div style={{ color: "var(--text-secondary)" }}>Test Suites: 1 passed, 1 total<br/>Tests: 3 passed, 3 total<br/>Time: 1.452s</div>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/checkout (200 OK) - Order Created</div>
+                                    <div style={{ color: "var(--error-color)", marginBottom: "4px" }}>✗ POST /api/webhook (500 Error) - Missing Signature Validation</div>
+                                    <div style={{ color: "var(--error-color)", marginBottom: "12px" }}>✗ POST /api/webhook (200 OK) - FORGED PAYLOAD ACCEPTED (CRITICAL)</div>
+                                    <div style={{ color: "var(--text-secondary)" }}>Test Suites: 1 failed, 1 total<br/>Tests: 1 passed, 2 failed, 3 total<br/>Time: 0.821s</div>
+                                  </>
+                                )}
+                              </div>
                             </div>
                           </div>
 

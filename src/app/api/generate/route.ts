@@ -16,28 +16,27 @@ export async function POST(req: Request) {
       The developer requested: "${prompt}" using "${stack}".
       
       CRITICAL INSTRUCTIONS:
-      1. You MUST use the official \`razorpay\` npm package.
-      2. The naive "unhealed" code MUST be missing webhook signature verification (a common AI hallucination).
+      1. You MUST generate EXACTLY 3 distinct files to prove multi-file architecture capability:
+         - A frontend component (e.g. Checkout.tsx)
+         - A backend route to create the order
+         - A backend webhook handler
+      2. The naive "unhealed" code MUST be missing webhook signature verification.
       3. The "healed" code MUST strictly implement: \`crypto.createHmac('sha256', secret).update(body).digest('hex')\` for webhook verification.
       4. The "healed" code MUST include \`idempotency_key\` headers where applicable.
       
-      Return STRICT raw JSON (no markdown blocks) matching this schema:
+      Return STRICT raw JSON (no markdown blocks) matching this schema exactly:
       {
-        "plan": "A brief explanation of the integration",
+        "plan": "A brief explanation of the architecture",
         "files": [
-          { 
-            "name": "api/webhook/route.ts",
-            "language": "typescript",
-            "content": "The naive implementation (NO signature verification)."
-          }
+          { "name": "frontend/Checkout.tsx", "language": "typescript", "content": "..." },
+          { "name": "backend/create-order.ts", "language": "typescript", "content": "..." },
+          { "name": "backend/webhook.ts", "language": "typescript", "content": "Naive webhook without validation..." }
         ],
         "simulatedError": "[FATAL] Webhook Signature Mismatch: Unauthorized access attempt detected.",
         "healedFiles": [
-          {
-            "name": "api/webhook/route.ts",
-            "language": "typescript",
-            "content": "The robust, self-healed version featuring crypto.createHmac verification and strict try-catch."
-          }
+          { "name": "frontend/Checkout.tsx", "language": "typescript", "content": "..." },
+          { "name": "backend/create-order.ts", "language": "typescript", "content": "..." },
+          { "name": "backend/webhook.ts", "language": "typescript", "content": "Robust webhook WITH crypto.createHmac verification..." }
         ]
       }
     `;
