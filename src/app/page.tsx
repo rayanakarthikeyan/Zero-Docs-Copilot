@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Terminal, Code, Play, CheckCircle, Loader2, Copy, FileCode2, AlertTriangle, ShieldCheck, Zap, Trash2, Clock, Activity, ShieldAlert, Lock, Download } from "lucide-react";
+import { Terminal, Code, Play, CheckCircle, Loader2, Copy, FileCode2, AlertTriangle, ShieldCheck, Zap, Trash2, Clock, Activity, ShieldAlert, Lock, Download, X, Info } from "lucide-react";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<"copilot" | "snippets">("copilot");
@@ -15,6 +15,7 @@ export default function Home() {
   
   const [activeTab, setActiveTab] = useState("code"); 
   const [activeFile, setActiveFile] = useState(0);
+  const [showAbout, setShowAbout] = useState(false);
   
   // Chaos Engine State
   const [isHealed, setIsHealed] = useState(false);
@@ -252,6 +253,12 @@ export default function Home() {
             </div>
           </div>
           <div style={{ display: "flex", gap: "12px", marginLeft: "auto" }}>
+            <button 
+              onClick={() => setShowAbout(true)} 
+              style={{ background: "transparent", border: "1px solid var(--border-color)", color: "var(--text-secondary)", padding: "4px 12px", borderRadius: "20px", fontSize: "12px", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, transition: "all 0.2s" }}
+            >
+              <Info size={12} /> About Platform
+            </button>
             <span className="badge badge-success" style={{ gap: "6px", background: "rgba(88, 166, 255, 0.1)", color: "var(--accent-color)", border: "1px solid rgba(88, 166, 255, 0.2)" }}>
               <Lock size={12} /> RAG Sync: Razorpay v2.3.1 (Live)
             </span>
@@ -537,6 +544,54 @@ export default function Home() {
           )}
         </div>
       </main>
+
+      {/* About Modal */}
+      {showAbout && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, padding: "24px" }} onClick={(e) => { if (e.target === e.currentTarget) setShowAbout(false); }}>
+          <div style={{ background: "#0d1117", border: "1px solid var(--border-color)", borderRadius: "12px", padding: "40px", maxWidth: "700px", position: "relative", boxShadow: "0 20px 40px rgba(0,0,0,0.5)" }}>
+            <button onClick={() => setShowAbout(false)} style={{ position: "absolute", top: "20px", right: "20px", background: "transparent", border: "none", color: "var(--text-secondary)", cursor: "pointer", padding: "8px" }}>
+              <X size={20} />
+            </button>
+            <h2 style={{ margin: "0 0 24px 0", color: "white", fontSize: "24px", display: "flex", alignItems: "center", gap: "12px" }}>
+              <Terminal size={28} color="var(--accent-color)" /> About Zero-Docs AI
+            </h2>
+            <div style={{ color: "var(--text-secondary)", fontSize: "15px", lineHeight: "1.7" }}>
+              <p style={{ marginBottom: "16px", fontSize: "16px", color: "#e6edf3" }}>
+                The modern internet runs on APIs, yet integrating them remains one of the most archaic processes in software engineering.
+              </p>
+              <p style={{ marginBottom: "16px" }}>
+                Created by <strong>Rayana Karthikeyan</strong> for the Razorpay Buildathon, Zero-Docs AI was born from a fundamental frustration: developers spend more time reading documentation and debugging cryptic webhook signatures than they do building actual products.
+              </p>
+              <p style={{ marginBottom: "24px" }}>
+                Standard AI wrappers were failing to solve this. They could generate basic scripts, but they could not output complex, multi-file architectures, nor could they guarantee cryptographic security. Zero-Docs AI was engineered to bridge this "Integration Chasm" by autonomously generating, compiling, and security-auditing enterprise-grade architectures on the fly.
+              </p>
+              
+              <div style={{ background: "rgba(88, 166, 255, 0.05)", border: "1px solid rgba(88, 166, 255, 0.2)", padding: "20px", borderRadius: "8px" }}>
+                <div style={{ fontWeight: 600, color: "var(--accent-color)", marginBottom: "12px", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Core Engineering Principles</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <Activity size={16} color="var(--success-color)" style={{ marginTop: "4px", flexShrink: 0 }} />
+                    <span style={{ fontSize: "13px" }}>Live Retrieval-Augmented Generation (RAG)</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <FileCode2 size={16} color="var(--success-color)" style={{ marginTop: "4px", flexShrink: 0 }} />
+                    <span style={{ fontSize: "13px" }}>Multi-file architectural output enforcement</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <ShieldCheck size={16} color="var(--success-color)" style={{ marginTop: "4px", flexShrink: 0 }} />
+                    <span style={{ fontSize: "13px" }}>Simulated Chaos Engine for static security auditing</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                    <Code size={16} color="var(--success-color)" style={{ marginTop: "4px", flexShrink: 0 }} />
+                    <span style={{ fontSize: "13px" }}>Built for modern Next.js/React ecosystems</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
