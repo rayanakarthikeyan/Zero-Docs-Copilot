@@ -301,12 +301,7 @@ export default function Home() {
                   />
                 </div>
                 
-                <div style={{ display: "flex", flexWrap: "wrap", marginBottom: "24px" }}>
-                  <div className="quick-start-chip" onClick={() => setPrompt("Generate a secure Standard Checkout integration")}>Standard Checkout</div>
-                  <div className="quick-start-chip" onClick={() => setPrompt("Generate a robust Subscription Webhook handler")}>Subscription Webhook</div>
-                  <div className="quick-start-chip" onClick={() => setPrompt("Generate a Smart Collect architecture")}>Smart Collect</div>
-                </div>
-                
+
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <button 
                     className="btn btn-primary" 
