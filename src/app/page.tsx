@@ -10,6 +10,7 @@ export default function Home() {
   const [stack, setStack] = useState("Next.js (React) + Node.js SDK");
   const [isGenerating, setIsGenerating] = useState(false);
   const [loadingText, setLoadingText] = useState("Compiling Integration...");
+  const [ghostText, setGhostText] = useState("");
   const [result, setResult] = useState<any>(null);
   
   const [activeTab, setActiveTab] = useState("code"); 
@@ -83,8 +84,12 @@ export default function Home() {
     setLogs([]);
     setActiveTab("code");
     
+    let provider = "Razorpay";
+    if (prompt.toLowerCase().includes("stripe")) provider = "Stripe";
+    else if (prompt.toLowerCase().includes("paypal")) provider = "PayPal";
+
     const loadingSteps = [
-      "Reading Razorpay API Documentation...",
+      `Reading ${provider} API Documentation...`,
       "Analyzing webhook architecture...",
       "Generating Node.js SDK integration...",
       "Running static security analysis...",
@@ -140,6 +145,34 @@ export default function Home() {
     }
     
     setIsSimulating(false);
+  };
+
+  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value;
+    setPrompt(val);
+    if (!val) {
+      setGhostText("");
+      return;
+    }
+    const suggestions = [
+      "Generate a secure Standard Checkout integration",
+      "Generate a robust Subscription Webhook handler",
+      "Generate a Smart Collect architecture"
+    ];
+    const match = suggestions.find(s => s.toLowerCase().startsWith(val.toLowerCase()));
+    if (match) {
+      setGhostText(match.substring(val.length));
+    } else {
+      setGhostText("");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Tab" && ghostText) {
+      e.preventDefault();
+      setPrompt(prompt + ghostText);
+      setGhostText("");
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -231,12 +264,18 @@ export default function Home() {
                   </div>
                 </div>
 
-                <textarea 
-                  placeholder="e.g. Build a Razorpay subscription checkout flow for a SaaS product..."
-                  style={{ width: "100%", height: "120px", padding: "16px", borderRadius: "8px", backgroundColor: "rgba(0,0,0,0.4)", border: "1px solid var(--border-color)", color: "white", fontSize: "15px", resize: "vertical", marginBottom: "16px", outline: "none", transition: "all 0.2s" }}
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                />
+                <div style={{ position: "relative", marginBottom: "16px" }}>
+                  <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, padding: "16px", pointerEvents: "none", color: "var(--text-secondary)", fontSize: "15px", whiteSpace: "pre-wrap", zIndex: 1, overflow: "hidden" }}>
+                    <span style={{ color: "transparent" }}>{prompt}</span>{ghostText}
+                  </div>
+                  <textarea 
+                    placeholder="e.g. Build a Razorpay subscription checkout flow for a SaaS product..."
+                    style={{ position: "relative", width: "100%", height: "120px", padding: "16px", borderRadius: "8px", backgroundColor: "rgba(0,0,0,0.4)", border: "1px solid var(--border-color)", color: "white", fontSize: "15px", resize: "vertical", outline: "none", transition: "all 0.2s", zIndex: 2 }}
+                    value={prompt}
+                    onChange={handlePromptChange}
+                    onKeyDown={handleKeyDown}
+                  />
+                </div>
                 
                 <div style={{ display: "flex", flexWrap: "wrap", marginBottom: "24px" }}>
                   <div className="quick-start-chip" onClick={() => setPrompt("Generate a secure Standard Checkout integration")}>Standard Checkout</div>
@@ -260,7 +299,7 @@ export default function Home() {
                 <div className="split-layout">
                   {/* Code Viewer / Preview */}
                   <div className="card" style={{ padding: 0, overflow: 'hidden', border: isHealed ? "1px solid var(--success-color)" : "1px solid var(--border-color)", transition: "all 0.5s ease", display: "flex", flexDirection: "column" }}>
-                    <div style={{ display: "flex", borderBottom: "1px solid var(--border-color)", backgroundColor: "rgba(0,0,0,0.4)" }}>
+                    <div style={{ display: "flex", borderBottom: "1px solid var(--border-color)", backgroundColor: "rgba(0,0,0,0.4)", alignItems: "center", paddingRight: "16px" }}>
                       <button 
                         onClick={() => setActiveTab("code")} 
                         style={{ padding: "16px 24px", background: activeTab === "code" ? "rgba(255,255,255,0.03)" : "transparent", border: "none", borderBottom: activeTab === "code" ? "2px solid var(--text-primary)" : "2px solid transparent", color: activeTab === "code" ? "white" : "var(--text-secondary)", cursor: "pointer", flex: 1, fontSize: "14px", fontWeight: 500, transition: "all 0.2s" }}
@@ -272,6 +311,17 @@ export default function Home() {
                         style={{ padding: "16px 24px", background: activeTab === "preview" ? "rgba(255,255,255,0.03)" : "transparent", border: "none", borderBottom: activeTab === "preview" ? "2px solid var(--text-primary)" : "2px solid transparent", color: activeTab === "preview" ? "white" : "var(--text-secondary)", cursor: "pointer", flex: 1, fontSize: "14px", fontWeight: 500, transition: "all 0.2s" }}
                       >
                         Live Sandbox
+                      </button>
+                      <button onClick={() => {
+                        if (!currentFiles || !currentFiles[activeFile]) return;
+                        const blob = new Blob([currentFiles[activeFile].content], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = currentFiles[activeFile].name.split('/').pop() || 'code.ts';
+                        a.click();
+                      }} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.05)", marginLeft: "auto" }}>
+                        <Download size={14} /> Export File
                       </button>
                     </div>
 
@@ -290,16 +340,6 @@ export default function Home() {
                           ))}
                         </div>
                         <div style={{ flex: 1, position: "relative" }}>
-                          <button onClick={() => {
-                            const blob = new Blob([currentFiles[activeFile].content], { type: 'text/plain' });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = currentFiles[activeFile].name.split('/').pop() || 'code.ts';
-                            a.click();
-                          }} className="btn btn-secondary" style={{ position: "absolute", top: "16px", right: "95px", padding: "6px 12px", fontSize: "12px", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.05)" }}>
-                            <Download size={14} /> Export
-                          </button>
                           <button onClick={() => copyToClipboard(currentFiles[activeFile].content)} className="btn btn-secondary" style={{ position: "absolute", top: "16px", right: "16px", padding: "6px 12px", fontSize: "12px", borderRadius: "6px" }}>
                             {copied ? <CheckCircle size={14} color="var(--success-color)" /> : <Copy size={14} />} 
                             {copied ? "Copied!" : "Copy"}
