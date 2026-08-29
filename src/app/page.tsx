@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Terminal, Code, Play, CheckCircle, Loader2, Copy, FileCode2, AlertTriangle, ShieldCheck, Zap, Trash2, Clock, Activity, ShieldAlert, Lock, Download, X, Info } from "lucide-react";
+import { Terminal, Code, Activity, ShieldCheck, Zap, RefreshCw, AlertTriangle, ShieldAlert, FileCode2, Copy, CheckCircle, Download, FileArchive, X } from 'lucide-react';
+import JSZip from 'jszip';
 import { blueprints } from "./blueprints";
 
 export default function Home() {
@@ -246,8 +247,9 @@ export default function Home() {
   // Simple syntax highlighting regex
   const highlightCode = (code: string) => {
     if (!code) return "";
-    return code
-      .replace(/(import|export|const|let|var|function|async|await|return|if|else|try|catch|new|throw)/g, '<span style="color: #ff7b72">$1</span>')
+    let safeCode = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return safeCode
+      .replace(/(import|export|const|let|var|function|async|await|return|if|else|try|catch|new|throw)\b/g, '<span style="color: #ff7b72">$1</span>')
       .replace(/([{}[\]()])/g, '<span style="color: #ffdce0">$1</span>')
       .replace(/(".*?"|'.*?'|`.*?`)/g, '<span style="color: #a5d6ff">$1</span>')
       .replace(/(\/\/.*)/g, '<span style="color: #8b949e">$1</span>');
@@ -387,17 +389,34 @@ export default function Home() {
                       >
                         Security Audit
                       </button>
-                      <button onClick={() => {
-                        if (!currentFiles || !currentFiles[activeFile]) return;
-                        const blob = new Blob([currentFiles[activeFile].content], { type: 'text/plain' });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = currentFiles[activeFile].name.split('/').pop() || 'code.ts';
-                        a.click();
-                      }} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.05)", marginLeft: "auto" }}>
-                        <Download size={14} /> Export File
-                      </button>
+                      <div style={{ marginLeft: "auto", display: "flex", gap: "8px", paddingRight: "16px" }}>
+                        <button onClick={() => {
+                          if (!currentFiles || !currentFiles[activeFile]) return;
+                          const blob = new Blob([currentFiles[activeFile].content], { type: 'text/plain' });
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = currentFiles[activeFile].name.split('/').pop() || 'code.ts';
+                          a.click();
+                        }} className="btn btn-secondary" style={{ padding: "6px 12px", fontSize: "12px", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.05)" }}>
+                          <Download size={14} /> Export File
+                        </button>
+                        <button onClick={async () => {
+                          if (!currentFiles || currentFiles.length === 0) return;
+                          const zip = new JSZip();
+                          currentFiles.forEach((f: any) => {
+                            zip.file(f.name, f.content);
+                          });
+                          const content = await zip.generateAsync({ type: "blob" });
+                          const url = URL.createObjectURL(content);
+                          const a = document.createElement('a');
+                          a.href = url;
+                          a.download = "zero-docs-architecture.zip";
+                          a.click();
+                        }} className="btn btn-primary" style={{ padding: "6px 12px", fontSize: "12px", borderRadius: "6px", display: "flex", alignItems: "center", gap: "6px" }}>
+                          <FileArchive size={14} /> Download ZIP
+                        </button>
+                      </div>
                     </div>
 
                     {activeTab === "code" ? (
@@ -425,17 +444,7 @@ export default function Home() {
                               </div>
                             </div>
                             <div style={{ display: "flex", gap: "8px" }}>
-                              <button onClick={() => {
-                                if (!currentFiles || !currentFiles[activeFile]) return;
-                                const blob = new Blob([currentFiles[activeFile].content], { type: 'text/plain' });
-                                const url = URL.createObjectURL(blob);
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = currentFiles[activeFile].name.split('/').pop() || 'code.ts';
-                                a.click();
-                              }} className="btn btn-secondary" style={{ padding: "8px 16px", fontSize: "13px", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.05)" }}>
-                                <Download size={14} /> Download ZIP
-                              </button>
+                              {/* Download ZIP button moved to top bar */}
                             </div>
                           </div>
 
