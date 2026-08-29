@@ -571,8 +571,8 @@ export default function Home() {
                     Full-stack architecture for standard Razorpay checkout including dynamic order creation, frontend payment UI, and cryptographically secure webhook handlers.
                   </p>
                   <div style={{ display: "flex", gap: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "auto" }}>
-                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => setPrompt("Generate a secure Standard Checkout integration")}>Deploy to Vercel</button>
-                     <button className="btn btn-secondary" style={{ flex: 1, justifyContent: "center", padding: "10px" }}>View Source</button>
+                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { setPrompt("Generate a secure Standard Checkout integration"); setCurrentView("copilot"); }}>Deploy to Vercel</button>
+                     <button className="btn btn-secondary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { setPrompt("Generate a secure Standard Checkout integration"); setCurrentView("copilot"); }}>View Source</button>
                   </div>
                 </div>
 
@@ -590,8 +590,8 @@ export default function Home() {
                     Recurring payment architecture with automatic billing cycles, deep linking for mobile SDKs, and webhook idempotency for unstable mobile networks.
                   </p>
                   <div style={{ display: "flex", gap: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "auto" }}>
-                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => setPrompt("Generate a robust Subscription Webhook handler")}>Deploy Backend</button>
-                     <button className="btn btn-secondary" style={{ flex: 1, justifyContent: "center", padding: "10px" }}>View Source</button>
+                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { setPrompt("Generate a robust Subscription Webhook handler"); setCurrentView("copilot"); }}>Deploy Backend</button>
+                     <button className="btn btn-secondary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { setPrompt("Generate a robust Subscription Webhook handler"); setCurrentView("copilot"); }}>View Source</button>
                   </div>
                 </div>
 
@@ -609,8 +609,8 @@ export default function Home() {
                     Automated invoice and payment link generation architecture. Includes auto-reminders and fractional currency rounding protection.
                   </p>
                   <div style={{ display: "flex", gap: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "auto" }}>
-                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }}>Deploy to Render</button>
-                     <button className="btn btn-secondary" style={{ flex: 1, justifyContent: "center", padding: "10px" }}>View Source</button>
+                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { setPrompt("Generate a B2B Payment Links architecture"); setCurrentView("copilot"); }}>Deploy to Render</button>
+                     <button className="btn btn-secondary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { setPrompt("Generate a B2B Payment Links architecture"); setCurrentView("copilot"); }}>View Source</button>
                   </div>
                 </div>
               </div>
