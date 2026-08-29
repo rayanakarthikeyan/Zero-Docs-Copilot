@@ -560,10 +560,10 @@ export default function Home() {
                 The modern internet runs on APIs, yet integrating them remains one of the most archaic processes in software engineering.
               </p>
               <p style={{ marginBottom: "16px" }}>
-                Created by <strong>Rayana Karthikeyan</strong> for the Razorpay Buildathon, Zero-Docs AI was born from a fundamental frustration: developers spend more time reading documentation and debugging cryptic webhook signatures than they do building actual products.
+                Created by <strong>Rayana Karthikeyan</strong>, Zero-Docs AI was born from a fundamental frustration: developers spend more time reading documentation and debugging cryptic webhook signatures than they do building actual products.
               </p>
               <p style={{ marginBottom: "24px" }}>
-                Standard AI wrappers were failing to solve this. They could generate basic scripts, but they could not output complex, multi-file architectures, nor could they guarantee cryptographic security. Zero-Docs AI was engineered to bridge this "Integration Chasm" by autonomously generating, compiling, and security-auditing enterprise-grade architectures on the fly.
+                I recognized that standard AI wrappers were failing to solve this. They could generate basic scripts, but they could not output complex, multi-file architectures, nor could they guarantee cryptographic security. Zero-Docs AI was engineered to bridge this "Integration Chasm" by autonomously generating, compiling, and security-auditing enterprise-grade architectures on the fly.
               </p>
               
               <div style={{ background: "rgba(88, 166, 255, 0.05)", border: "1px solid rgba(88, 166, 255, 0.2)", padding: "20px", borderRadius: "8px" }}>

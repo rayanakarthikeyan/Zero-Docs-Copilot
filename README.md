@@ -16,9 +16,9 @@
 ## 1. The Origin Story: Why Zero-Docs AI?
 The modern internet runs on APIs, yet integrating them remains one of the most archaic processes in software engineering. 
 
-Created by Rayana Karthikeyan for the Razorpay Buildathon, Zero-Docs AI was born from a fundamental frustration: developers spend more time reading documentation, fighting cryptic authentication errors, and debugging webhooks than they do building actual products. For API-first platforms like Razorpay, Developer Experience (DX) is not just a nice-to-have; it directly correlates to revenue. If an integration takes weeks instead of hours, businesses abandon the platform. 
+Created by Rayana Karthikeyan, Zero-Docs AI was born from a fundamental frustration: developers spend more time reading documentation, fighting cryptic authentication errors, and debugging webhooks than they do building actual products. For API-first platforms like Razorpay, Developer Experience (DX) is not just a nice-to-have; it directly correlates to revenue. If an integration takes weeks instead of hours, businesses abandon the platform. 
 
-Rayana recognized that standard AI wrappers were failing to solve this. They could generate basic scripts, but they could not output complex, multi-file architectures, nor could they guarantee cryptographic security. Zero-Docs AI was engineered to bridge this "Integration Chasm" by autonomously generating, compiling, and security-auditing enterprise-grade architectures on the fly.
+I recognized that standard AI wrappers were failing to solve this. They could generate basic scripts, but they could not output complex, multi-file architectures, nor could they guarantee cryptographic security. Zero-Docs AI was engineered to bridge this "Integration Chasm" by autonomously generating, compiling, and security-auditing enterprise-grade architectures on the fly.
 
 ## 2. Research & Insights
 Our research analyzed the standard integration flow for enterprise payment gateways. We identified that the highest drop-off and failure rates occur during two specific phases:
