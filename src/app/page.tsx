@@ -132,9 +132,14 @@ export default function Home() {
         body: JSON.stringify({ prompt, stack }),
       });
       const data = await response.json();
-      setResult(data);
-      saveSnippet(data, prompt, stack);
-    } catch (error) {
+      if (data.error) {
+        alert("Generation failed: " + data.error);
+      } else {
+        setResult(data);
+        saveSnippet(data, prompt, stack);
+      }
+    } catch (error: any) {
+      alert("Error generating code: " + error.message);
       console.error("Error generating code:", error);
     } finally {
       clearInterval(interval);
