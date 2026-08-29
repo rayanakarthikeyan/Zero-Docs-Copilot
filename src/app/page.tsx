@@ -187,7 +187,7 @@ export default function Home() {
 
       <main className="main-content">
         <header className="topbar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", gap: "24px" }}>
+          <div className="topbar-metrics" style={{ display: "flex", gap: "24px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--success-color)", fontSize: "13px", fontWeight: 600, background: "rgba(46, 160, 67, 0.1)", padding: "6px 12px", borderRadius: "20px", border: "1px solid rgba(46, 160, 67, 0.2)" }}>
               <Activity size={14} /> Webhooks Secured: 50,421
             </div>
@@ -198,7 +198,7 @@ export default function Home() {
               <Lock size={14} /> Vulnerability Exposure: 0ms
             </div>
           </div>
-          <div style={{ display: "flex", gap: "12px" }}>
+          <div style={{ display: "flex", gap: "12px", marginLeft: "auto" }}>
             <span className="badge badge-success" style={{ gap: "6px" }}>
               <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "currentColor", boxShadow: "0 0 6px currentColor" }}></div>
               Agent Online
@@ -233,10 +233,16 @@ export default function Home() {
 
                 <textarea 
                   placeholder="e.g. Build a Razorpay subscription checkout flow for a SaaS product..."
-                  style={{ width: "100%", height: "120px", padding: "16px", borderRadius: "8px", backgroundColor: "rgba(0,0,0,0.4)", border: "1px solid var(--border-color)", color: "white", fontSize: "15px", resize: "vertical", marginBottom: "24px", outline: "none", transition: "all 0.2s" }}
+                  style={{ width: "100%", height: "120px", padding: "16px", borderRadius: "8px", backgroundColor: "rgba(0,0,0,0.4)", border: "1px solid var(--border-color)", color: "white", fontSize: "15px", resize: "vertical", marginBottom: "16px", outline: "none", transition: "all 0.2s" }}
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                 />
+                
+                <div style={{ display: "flex", flexWrap: "wrap", marginBottom: "24px" }}>
+                  <div className="quick-start-chip" onClick={() => setPrompt("Generate a secure Standard Checkout integration")}>Standard Checkout</div>
+                  <div className="quick-start-chip" onClick={() => setPrompt("Generate a robust Subscription Webhook handler")}>Subscription Webhook</div>
+                  <div className="quick-start-chip" onClick={() => setPrompt("Generate a Smart Collect architecture")}>Smart Collect</div>
+                </div>
                 
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <button 
@@ -251,7 +257,7 @@ export default function Home() {
               </div>
 
               {result && (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "24px", animation: "fadeIn 0.5s ease" }}>
+                <div className="split-layout">
                   {/* Code Viewer / Preview */}
                   <div className="card" style={{ padding: 0, overflow: 'hidden', border: isHealed ? "1px solid var(--success-color)" : "1px solid var(--border-color)", transition: "all 0.5s ease", display: "flex", flexDirection: "column" }}>
                     <div style={{ display: "flex", borderBottom: "1px solid var(--border-color)", backgroundColor: "rgba(0,0,0,0.4)" }}>
