@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Terminal, Code, Play, CheckCircle, Loader2, Copy, FileCode2, AlertTriangle, ShieldCheck, Zap, Trash2, Clock, Activity, ShieldAlert, Lock } from "lucide-react";
+import { Terminal, Code, Play, CheckCircle, Loader2, Copy, FileCode2, AlertTriangle, ShieldCheck, Zap, Trash2, Clock, Activity, ShieldAlert, Lock, Download } from "lucide-react";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<"copilot" | "snippets">("copilot");
@@ -9,6 +9,7 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [stack, setStack] = useState("Next.js (React) + Node.js SDK");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [loadingText, setLoadingText] = useState("Compiling Integration...");
   const [result, setResult] = useState<any>(null);
   
   const [activeTab, setActiveTab] = useState("code"); 
@@ -81,6 +82,20 @@ export default function Home() {
     setIsHealed(false);
     setLogs([]);
     setActiveTab("code");
+    
+    const loadingSteps = [
+      "Reading Razorpay API Documentation...",
+      "Analyzing webhook architecture...",
+      "Generating Node.js SDK integration...",
+      "Running static security analysis...",
+      "Finalizing architecture..."
+    ];
+    let stepIndex = 0;
+    setLoadingText(loadingSteps[0]);
+    const interval = setInterval(() => {
+      stepIndex = (stepIndex + 1) % loadingSteps.length;
+      setLoadingText(loadingSteps[stepIndex]);
+    }, 2000);
 
     try {
       const response = await fetch("/api/generate", {
@@ -94,6 +109,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error generating code:", error);
     } finally {
+      clearInterval(interval);
       setIsGenerating(false);
     }
   };
@@ -227,9 +243,9 @@ export default function Home() {
                     className="btn btn-primary" 
                     onClick={handleGenerate} 
                     disabled={isGenerating || !prompt}
-                    style={{ padding: "12px 24px", fontSize: "15px" }}
+                    style={{ padding: "12px 24px", fontSize: "15px", minWidth: "280px", justifyContent: "center" }}
                   >
-                    {isGenerating ? <><Loader2 size={18} className="animate-spin" /> Compiling Integration...</> : <><Zap size={18} fill="currentColor" /> Generate Code</>}
+                    {isGenerating ? <><Loader2 size={18} className="animate-spin" /> {loadingText}</> : <><Zap size={18} fill="currentColor" /> Generate Code</>}
                   </button>
                 </div>
               </div>
@@ -268,6 +284,16 @@ export default function Home() {
                           ))}
                         </div>
                         <div style={{ flex: 1, position: "relative" }}>
+                          <button onClick={() => {
+                            const blob = new Blob([currentFiles[activeFile].content], { type: 'text/plain' });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = currentFiles[activeFile].name.split('/').pop() || 'code.ts';
+                            a.click();
+                          }} className="btn btn-secondary" style={{ position: "absolute", top: "16px", right: "95px", padding: "6px 12px", fontSize: "12px", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.05)" }}>
+                            <Download size={14} /> Export
+                          </button>
                           <button onClick={() => copyToClipboard(currentFiles[activeFile].content)} className="btn btn-secondary" style={{ position: "absolute", top: "16px", right: "16px", padding: "6px 12px", fontSize: "12px", borderRadius: "6px" }}>
                             {copied ? <CheckCircle size={14} color="var(--success-color)" /> : <Copy size={14} />} 
                             {copied ? "Copied!" : "Copy"}
