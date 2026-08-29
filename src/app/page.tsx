@@ -25,7 +25,26 @@ export default function Home() {
   // Snippets State
   const [savedSnippets, setSavedSnippets] = useState<any[]>([]);
 
+  // Telemetry State
+  const [telemetry, setTelemetry] = useState({
+    webhooks: 50421,
+    threats: 12840,
+    exposure: 0
+  });
+
   const logsEndRef = useRef<HTMLDivElement>(null);
+
+  // Simulated Live Telemetry
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTelemetry(prev => ({
+        ...prev,
+        webhooks: prev.webhooks + Math.floor(Math.random() * 4),
+        threats: prev.threats + (Math.random() > 0.7 ? 1 : 0)
+      }));
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     logsEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -222,13 +241,13 @@ export default function Home() {
         <header className="topbar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div className="topbar-metrics" style={{ display: "flex", gap: "24px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--success-color)", fontSize: "13px", fontWeight: 600, background: "rgba(46, 160, 67, 0.1)", padding: "6px 12px", borderRadius: "20px", border: "1px solid rgba(46, 160, 67, 0.2)" }}>
-              <Activity size={14} /> Webhooks Secured: 50,421
+              <Activity size={14} /> Webhooks Secured: {telemetry.webhooks.toLocaleString()}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--accent-color)", fontSize: "13px", fontWeight: 600, background: "rgba(88, 166, 255, 0.1)", padding: "6px 12px", borderRadius: "20px", border: "1px solid rgba(88, 166, 255, 0.2)" }}>
-              <ShieldCheck size={14} /> Zero-Day Threats Blocked: 12,840
+              <ShieldCheck size={14} /> Zero-Day Threats Blocked: {telemetry.threats.toLocaleString()}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#d2a8ff", fontSize: "13px", fontWeight: 600, background: "rgba(210, 168, 255, 0.1)", padding: "6px 12px", borderRadius: "20px", border: "1px solid rgba(210, 168, 255, 0.2)" }}>
-              <Lock size={14} /> Vulnerability Exposure: 0ms
+              <Lock size={14} /> Vulnerability Exposure: {telemetry.exposure}ms
             </div>
           </div>
           <div style={{ display: "flex", gap: "12px", marginLeft: "auto" }}>
