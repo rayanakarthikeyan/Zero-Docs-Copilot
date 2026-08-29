@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Terminal, Code, Play, CheckCircle, Loader2, Copy, FileCode2, AlertTriangle, ShieldCheck, Zap, Trash2, Clock } from "lucide-react";
+import { Terminal, Code, Play, CheckCircle, Loader2, Copy, FileCode2, AlertTriangle, ShieldCheck, Zap, Trash2, Clock, Activity, ShieldAlert, Lock } from "lucide-react";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<"copilot" | "snippets">("copilot");
@@ -104,12 +104,12 @@ export default function Home() {
     setActiveTab("code");
     
     const sequence = [
-      { text: "[SYSTEM] Initiating Chaos payload (Simulating Network Drop during Webhook)...", delay: 800 },
-      { text: `[CRASH] FATAL ERROR 500: ${result.simulatedError || "Webhook signature missing"}`, delay: 1200 },
-      { text: "[AGENT] Intercepting stack trace... Missing Idempotency Key detected.", delay: 1000 },
-      { text: "[AGENT] Rewriting integration architecture to enforce Razorpay best practices...", delay: 1500 },
+      { text: "[SYSTEM] Initiating Vulnerability Scan on Generated Code...", delay: 800 },
+      { text: `[CRASH] FATAL ERROR: ${result.simulatedError || "Missing crypto.createHmac verification"}`, delay: 1200 },
+      { text: "[AGENT] Intercepting vulnerability... Unsecured Webhook endpoint detected.", delay: 1000 },
+      { text: "[AGENT] Enforcing strict Razorpay Node.js SDK rules... Injecting cryptographic signature verification...", delay: 1500 },
       { text: "HEAL", delay: 100 }, 
-      { text: "[SUCCESS] Architecture healed. Webhook retry successful. Application is stable.", delay: 500 }
+      { text: "[SUCCESS] Architecture secured. crypto.createHmac enforced. Zero-Day threat mitigated.", delay: 500 }
     ];
 
     setLogs([]);
@@ -170,8 +170,18 @@ export default function Home() {
       </aside>
 
       <main className="main-content">
-        <header className="topbar">
-          <div style={{ color: "var(--text-secondary)", fontSize: "14px", fontWeight: 500 }}>Ultimate Developer Experience Platform</div>
+        <header className="topbar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", gap: "24px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--success-color)", fontSize: "13px", fontWeight: 600, background: "rgba(46, 160, 67, 0.1)", padding: "6px 12px", borderRadius: "20px", border: "1px solid rgba(46, 160, 67, 0.2)" }}>
+              <Activity size={14} /> Webhooks Secured: 50,421
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--accent-color)", fontSize: "13px", fontWeight: 600, background: "rgba(88, 166, 255, 0.1)", padding: "6px 12px", borderRadius: "20px", border: "1px solid rgba(88, 166, 255, 0.2)" }}>
+              <ShieldCheck size={14} /> Zero-Day Threats Blocked: 12,840
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#d2a8ff", fontSize: "13px", fontWeight: 600, background: "rgba(210, 168, 255, 0.1)", padding: "6px 12px", borderRadius: "20px", border: "1px solid rgba(210, 168, 255, 0.2)" }}>
+              <Lock size={14} /> Vulnerability Exposure: 0ms
+            </div>
+          </div>
           <div style={{ display: "flex", gap: "12px" }}>
             <span className="badge badge-success" style={{ gap: "6px" }}>
               <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "currentColor", boxShadow: "0 0 6px currentColor" }}></div>
@@ -267,16 +277,48 @@ export default function Home() {
                         </div>
                       </div>
                     ) : (
-                      <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", backgroundColor: "#ffffff", backgroundImage: "radial-gradient(#e5e7eb 1px, transparent 1px)", backgroundSize: "24px 24px" }}>
-                        <div style={{ width: "360px", background: "white", padding: "40px 32px", borderRadius: "16px", boxShadow: "0 20px 40px rgba(0,0,0,0.08)", color: "#111827", textAlign: "center", border: "1px solid rgba(0,0,0,0.05)" }}>
-                          <div style={{ width: "56px", height: "56px", background: "#000000", borderRadius: "14px", margin: "0 auto 24px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            <Zap size={28} color="#ffffff" fill="#ffffff" />
+                      <div style={{ flex: 1, display: "flex", flexDirection: "column", backgroundColor: "#0d1117" }}>
+                        <div style={{ padding: "24px", borderBottom: "1px solid var(--border-color)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <h3 style={{ margin: 0, fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+                            <ShieldAlert size={18} color="var(--accent-color)" /> Static Code Analyzer & Linter
+                          </h3>
+                          <span style={{ fontSize: "12px", background: "rgba(255,255,255,0.1)", padding: "4px 8px", borderRadius: "12px" }}>Automated Security Audit</span>
+                        </div>
+                        <div style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "16px", flex: 1 }}>
+                          
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", padding: "20px", borderRadius: "8px", border: isHealed ? "1px solid rgba(46, 160, 67, 0.3)" : "1px solid rgba(239, 68, 68, 0.3)", backgroundColor: isHealed ? "rgba(46, 160, 67, 0.05)" : "rgba(239, 68, 68, 0.05)" }}>
+                            {isHealed ? <ShieldCheck size={24} color="var(--success-color)" style={{ marginTop: "2px" }} /> : <AlertTriangle size={24} color="var(--error-color)" style={{ marginTop: "2px" }} />}
+                            <div>
+                              <h4 style={{ margin: "0 0 8px 0", fontSize: "15px", color: isHealed ? "var(--success-color)" : "var(--error-color)" }}>
+                                {isHealed ? "Rule Passed: Webhook Signature Verified" : "Rule Failed: Missing Webhook Signature"}
+                              </h4>
+                              <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                                {isHealed 
+                                  ? "The code successfully implements crypto.createHmac('sha256', secret) to verify the x-razorpay-signature header. Unauthorized payloads will be rejected."
+                                  : "The generated code does not verify the x-razorpay-signature header. This is a critical security vulnerability that allows attackers to spoof payment webhooks and steal funds."}
+                              </p>
+                              {!isHealed && (
+                                <div style={{ marginTop: "12px", display: "inline-block", background: "rgba(255,0,0,0.1)", color: "var(--error-color)", padding: "4px 8px", borderRadius: "4px", fontSize: "12px", fontWeight: "bold" }}>
+                                  ACTION REQUIRED: Deploy Chaos Engine to Auto-Heal
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <h3 style={{ margin: "0 0 12px 0", fontSize: "22px", fontWeight: 700, letterSpacing: "-0.5px" }}>Razorpay Checkout</h3>
-                          <p style={{ fontSize: "15px", color: "#6b7280", marginBottom: "32px", lineHeight: "1.5" }}>Live simulation of the generated component.</p>
-                          <button style={{ width: "100%", background: "#000000", color: "white", border: "none", padding: "16px", borderRadius: "8px", fontWeight: "600", fontSize: "16px", cursor: "pointer", transition: "transform 0.1s, box-shadow 0.2s" }} onMouseDown={(e) => e.currentTarget.style.transform = "scale(0.98)"} onMouseUp={(e) => e.currentTarget.style.transform = "scale(1)"} onMouseEnter={(e) => e.currentTarget.style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)"} onMouseLeave={(e) => e.currentTarget.style.boxShadow = "none"}>
-                            Pay ₹999.00
-                          </button>
+
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", padding: "20px", borderRadius: "8px", border: isHealed ? "1px solid rgba(46, 160, 67, 0.3)" : "1px solid rgba(239, 68, 68, 0.3)", backgroundColor: isHealed ? "rgba(46, 160, 67, 0.05)" : "rgba(239, 68, 68, 0.05)" }}>
+                            {isHealed ? <CheckCircle size={24} color="var(--success-color)" style={{ marginTop: "2px" }} /> : <AlertTriangle size={24} color="var(--error-color)" style={{ marginTop: "2px" }} />}
+                            <div>
+                              <h4 style={{ margin: "0 0 8px 0", fontSize: "15px", color: isHealed ? "var(--success-color)" : "var(--error-color)" }}>
+                                {isHealed ? "Rule Passed: Idempotency Keys Enforced" : "Rule Failed: Missing Idempotency Keys"}
+                              </h4>
+                              <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.5" }}>
+                                {isHealed 
+                                  ? "The code successfully includes idempotency_key headers to prevent duplicate order creation during network timeouts."
+                                  : "Network timeouts could result in duplicate API calls and double-charging customers. No idempotency mechanism detected."}
+                              </p>
+                            </div>
+                          </div>
+
                         </div>
                       </div>
                     )}

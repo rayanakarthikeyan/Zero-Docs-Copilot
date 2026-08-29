@@ -16,27 +16,27 @@ export async function POST(req: Request) {
       The developer requested: "${prompt}" using "${stack}".
       
       CRITICAL INSTRUCTIONS:
-      1. You MUST use the official \`razorpay\` npm package in your Node.js backend code.
-      2. You MUST demonstrate Razorpay best practices (e.g., verifying webhook signatures using \`crypto.createHmac\`, order creation before payment).
-      
-      You must generate the integration code, but also generate an "Auto-Healed" version of the code that handles extreme edge cases.
+      1. You MUST use the official \`razorpay\` npm package.
+      2. The naive "unhealed" code MUST be missing webhook signature verification (a common AI hallucination).
+      3. The "healed" code MUST strictly implement: \`crypto.createHmac('sha256', secret).update(body).digest('hex')\` for webhook verification.
+      4. The "healed" code MUST include \`idempotency_key\` headers where applicable.
       
       Return STRICT raw JSON (no markdown blocks) matching this schema:
       {
         "plan": "A brief explanation of the integration",
         "files": [
           { 
-            "name": "e.g., checkout.tsx",
+            "name": "api/webhook/route.ts",
             "language": "typescript",
-            "content": "The standard naive implementation code (missing robust error handling)."
+            "content": "The naive implementation (NO signature verification)."
           }
         ],
-        "simulatedError": "A realistic stack trace or log of what would happen if a chaotic edge case occurred (e.g. Webhook signature mismatch, 500 timeout).",
+        "simulatedError": "[FATAL] Webhook Signature Mismatch: Unauthorized access attempt detected.",
         "healedFiles": [
           {
-            "name": "e.g., checkout.tsx",
+            "name": "api/webhook/route.ts",
             "language": "typescript",
-            "content": "The robust, self-healed version of the code featuring idempotency keys, strict try-catch blocks, and webhook signature verification."
+            "content": "The robust, self-healed version featuring crypto.createHmac verification and strict try-catch."
           }
         ]
       }
