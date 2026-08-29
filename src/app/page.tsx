@@ -400,11 +400,11 @@ export default function Home() {
                             <div style={{ flex: 1 }}>
                               <div style={{ fontSize: "12px", color: "var(--text-secondary)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 600 }}>1-Click CLI Deployment</div>
                               <div style={{ background: "#000", padding: "10px 16px", borderRadius: "6px", border: "1px solid rgba(88, 166, 255, 0.2)", display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "var(--font-mono)", fontSize: "13px" }}>
-                                <span style={{ color: "#e6edf3" }}>npx @zero-docs/cli init --blueprint={currentFiles[0].name.replace('.tsx', '').toLowerCase()}</span>
+                                <span style={{ color: "#e6edf3" }}>npx @zero-docs/cli init --blueprint={currentFiles?.[0]?.name?.replace('.tsx', '').toLowerCase() || 'demo'}</span>
                                 <button onClick={() => copyToClipboard('npx @zero-docs/cli init --blueprint=demo')} style={{ background: "transparent", border: "none", color: "var(--accent-color)", cursor: "pointer" }}><Copy size={14} /></button>
                               </div>
                             </div>
-                            <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
+                            <div style={{ display: "flex", gap: "8px" }}>
                               <button onClick={() => {
                                 if (!currentFiles || !currentFiles[activeFile]) return;
                                 const blob = new Blob([currentFiles[activeFile].content], { type: 'text/plain' });
@@ -413,7 +413,7 @@ export default function Home() {
                                 a.href = url;
                                 a.download = currentFiles[activeFile].name.split('/').pop() || 'code.ts';
                                 a.click();
-                              }} className="btn btn-secondary" style={{ padding: "8px 16px", fontSize: "13px", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.05)", height: "100%" }}>
+                              }} className="btn btn-secondary" style={{ padding: "8px 16px", fontSize: "13px", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.05)" }}>
                                 <Download size={14} /> Download ZIP
                               </button>
                             </div>
@@ -532,7 +532,7 @@ export default function Home() {
                       {isSimulating ? <><Loader2 size={18} className="animate-spin" style={{ marginRight: "8px" }} /> Injecting Payload...</> : "Inject Failure Payload"}
                     </button>
 
-                    <div style={{ flex: 1, backgroundColor: "#000000", borderRadius: "8px", padding: "16px", marginTop: "24px", fontFamily: "var(--font-mono)", fontSize: "13px", overflowY: "auto", border: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "12px", minHeight: "220px", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5)" }}>
+                    <div style={{ flex: 1, backgroundColor: "#000000", borderRadius: "8px", padding: "16px", marginTop: "24px", fontFamily: "var(--font-mono)", fontSize: "13px", overflowY: "auto", border: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "12px", minHeight: "220px", maxHeight: "250px", boxShadow: "inset 0 2px 10px rgba(0,0,0,0.5)" }}>
                       {logs.length === 0 && <div style={{ color: "#444" }}>&gt; Waiting for telemetry...</div>}
                       {logs.map((log, i) => (
                         <div key={i} style={{ 
