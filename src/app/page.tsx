@@ -278,6 +278,11 @@ export default function Home() {
                     >
                       <option>Next.js (React) + Node.js SDK</option>
                       <option>React + Python (FastAPI)</option>
+                      <option>Vue.js + Go (Fiber)</option>
+                      <option>Angular + Java (Spring Boot)</option>
+                      <option>SvelteKit + Ruby on Rails</option>
+                      <option>React Native (Expo) + Node.js</option>
+                      <option>Flutter + Dart</option>
                       <option>HTML/Vanilla JS + PHP</option>
                     </select>
                   </div>
