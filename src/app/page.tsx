@@ -338,6 +338,12 @@ export default function Home() {
                   />
                 </div>
                 
+                <div style={{ display: "flex", gap: "8px", marginBottom: "20px", flexWrap: "wrap" }}>
+                   <span style={{ fontSize: "12px", color: "var(--text-secondary)", display: "flex", alignItems: "center", marginRight: "4px" }}>Try:</span>
+                   <button className="btn btn-secondary" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "12px", backgroundColor: "rgba(255,255,255,0.05)" }} onClick={() => setPrompt("Build a multi-tenant subscription flow with webhook idempotency")}>Subscription Flow</button>
+                   <button className="btn btn-secondary" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "12px", backgroundColor: "rgba(255,255,255,0.05)" }} onClick={() => setPrompt("Generate a B2B payment link generator with fractional currency rounding")}>B2B Payment Links</button>
+                   <button className="btn btn-secondary" style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "12px", backgroundColor: "rgba(255,255,255,0.05)" }} onClick={() => setPrompt("Create a secure Standard Checkout with dynamic order creation")}>Standard Checkout</button>
+                </div>
 
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <button 
@@ -366,7 +372,7 @@ export default function Home() {
                         onClick={() => setActiveTab("preview")} 
                         style={{ padding: "16px 24px", background: activeTab === "preview" ? "rgba(255,255,255,0.03)" : "transparent", border: "none", borderBottom: activeTab === "preview" ? "2px solid var(--text-primary)" : "2px solid transparent", color: activeTab === "preview" ? "white" : "var(--text-secondary)", cursor: "pointer", flex: 1, fontSize: "14px", fontWeight: 500, transition: "all 0.2s" }}
                       >
-                        Live Sandbox
+                        Security Audit
                       </button>
                       <button onClick={() => {
                         if (!currentFiles || !currentFiles[activeFile]) return;
