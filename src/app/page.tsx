@@ -22,6 +22,7 @@ export default function Home() {
   const [logs, setLogs] = useState<string[]>([]);
   const [isSimulating, setIsSimulating] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [attackVector, setAttackVector] = useState("signature");
 
   // Snippets State
   const [savedSnippets, setSavedSnippets] = useState<any[]>([]);
@@ -145,14 +146,38 @@ export default function Home() {
     setIsSimulating(true);
     setActiveTab("code");
     
-    const sequence = [
-      { text: "[SYSTEM] Initiating Vulnerability Scan on Generated Code...", delay: 800 },
-      { text: `[CRASH] FATAL ERROR: ${result.simulatedError || "Missing crypto.createHmac verification"}`, delay: 1200 },
-      { text: "[AGENT] Intercepting vulnerability... Unsecured Webhook endpoint detected.", delay: 1000 },
-      { text: "[AGENT] Enforcing strict Razorpay Node.js SDK rules... Injecting cryptographic signature verification...", delay: 1500 },
-      { text: "HEAL", delay: 100 }, 
-      { text: "[SUCCESS] Architecture secured. crypto.createHmac enforced. Zero-Day threat mitigated.", delay: 500 }
-    ];
+    let sequence = [];
+    if (attackVector === "signature") {
+      sequence = [
+        { text: "> Initializing Chaos Attack: Webhook Signature Forgery...", delay: 800 },
+        { text: "> Injecting malicious payload into POST /api/webhook...", delay: 1000 },
+        { text: `[CRASH] FATAL ERROR: ${result?.simulatedError || "Missing crypto.createHmac verification"}`, delay: 1200 },
+        { text: "[AGENT] Intercepting vulnerability... Unsecured Webhook endpoint detected.", delay: 1000 },
+        { text: "[AGENT] Enforcing strict Razorpay Node.js SDK rules... Injecting cryptographic signature verification...", delay: 1500 },
+        { text: "HEAL", delay: 100 }, 
+        { text: "[SUCCESS] Architecture secured. crypto.createHmac enforced. Zero-Day threat mitigated.", delay: 500 }
+      ];
+    } else if (attackVector === "idempotency") {
+      sequence = [
+        { text: "> Initializing Chaos Attack: High Latency Network Timeout...", delay: 800 },
+        { text: "> Simulating double-click on payment button (Retry logic active)...", delay: 1000 },
+        { text: `[CRASH] FATAL ERROR: Duplicate Order Created. Missing Idempotency Key.`, delay: 1200 },
+        { text: "[AGENT] Intercepting vulnerability... No x-idempotency-key header detected.", delay: 1000 },
+        { text: "[AGENT] Rewriting API payload to enforce uuid v4 idempotency keys...", delay: 1500 },
+        { text: "HEAL", delay: 100 }, 
+        { text: "[SUCCESS] Architecture secured. Idempotency enforced. Double-charges prevented.", delay: 500 }
+      ];
+    } else {
+      sequence = [
+        { text: "> Initializing Chaos Attack: Currency Decimal Manipulation...", delay: 800 },
+        { text: "> Injecting fractional paise into amount payload: 500.50...", delay: 1000 },
+        { text: `[CRASH] FATAL ERROR: Invalid amount. Razorpay expects integer paise.`, delay: 1200 },
+        { text: "[AGENT] Intercepting vulnerability... Float passed to integer field.", delay: 1000 },
+        { text: "[AGENT] Enforcing Math.round(amount * 100) formatting...", delay: 1500 },
+        { text: "HEAL", delay: 100 }, 
+        { text: "[SUCCESS] Architecture secured. Decimal manipulation thwarted.", delay: 500 }
+      ];
+    }
 
     setLogs([]);
     
@@ -234,7 +259,7 @@ export default function Home() {
             onClick={() => setCurrentView("snippets")}
           >
             <FileCode2 size={18} />
-            My Snippets
+            Instant Blueprints
           </div>
         </nav>
       </aside>
@@ -369,12 +394,36 @@ export default function Home() {
                             </div>
                           ))}
                         </div>
-                        <div style={{ flex: 1, position: "relative" }}>
-                          <button onClick={() => copyToClipboard(currentFiles[activeFile].content)} className="btn btn-secondary" style={{ position: "absolute", top: "16px", right: "16px", padding: "6px 12px", fontSize: "12px", borderRadius: "6px" }}>
+                        <div style={{ flex: 1, position: "relative", display: "flex", flexDirection: "column" }}>
+                          
+                          <div style={{ padding: "16px", borderBottom: "1px solid var(--border-color)", display: "flex", gap: "16px", alignItems: "center", background: "rgba(88, 166, 255, 0.05)" }}>
+                            <div style={{ flex: 1 }}>
+                              <div style={{ fontSize: "12px", color: "var(--text-secondary)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 600 }}>1-Click CLI Deployment</div>
+                              <div style={{ background: "#000", padding: "10px 16px", borderRadius: "6px", border: "1px solid rgba(88, 166, 255, 0.2)", display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "var(--font-mono)", fontSize: "13px" }}>
+                                <span style={{ color: "#e6edf3" }}>npx @zero-docs/cli init --blueprint={currentFiles[0].name.replace('.tsx', '').toLowerCase()}</span>
+                                <button onClick={() => copyToClipboard('npx @zero-docs/cli init --blueprint=demo')} style={{ background: "transparent", border: "none", color: "var(--accent-color)", cursor: "pointer" }}><Copy size={14} /></button>
+                              </div>
+                            </div>
+                            <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
+                              <button onClick={() => {
+                                if (!currentFiles || !currentFiles[activeFile]) return;
+                                const blob = new Blob([currentFiles[activeFile].content], { type: 'text/plain' });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = currentFiles[activeFile].name.split('/').pop() || 'code.ts';
+                                a.click();
+                              }} className="btn btn-secondary" style={{ padding: "8px 16px", fontSize: "13px", borderRadius: "6px", backgroundColor: "rgba(255,255,255,0.05)", height: "100%" }}>
+                                <Download size={14} /> Download ZIP
+                              </button>
+                            </div>
+                          </div>
+
+                          <button onClick={() => copyToClipboard(currentFiles[activeFile].content)} className="btn btn-secondary" style={{ position: "absolute", top: "100px", right: "16px", padding: "6px 12px", fontSize: "12px", borderRadius: "6px" }}>
                             {copied ? <CheckCircle size={14} color="var(--success-color)" /> : <Copy size={14} />} 
                             {copied ? "Copied!" : "Copy"}
                           </button>
-                          <pre style={{ margin: 0, padding: "24px", overflowX: "auto", fontSize: "14px", lineHeight: "1.6", color: isHealed ? "#7ee787" : "#e6edf3", minHeight: "450px", transition: "color 0.5s ease", fontFamily: "var(--font-mono)" }} dangerouslySetInnerHTML={{ __html: highlightCode(currentFiles?.[activeFile]?.content) }}>
+                          <pre style={{ margin: 0, padding: "24px", paddingTop: "50px", overflowX: "auto", fontSize: "14px", lineHeight: "1.6", color: isHealed ? "#7ee787" : "#e6edf3", minHeight: "450px", transition: "color 0.5s ease", fontFamily: "var(--font-mono)", flex: 1 }} dangerouslySetInnerHTML={{ __html: highlightCode(currentFiles?.[activeFile]?.content) }}>
                           </pre>
                         </div>
                       </div>
@@ -431,15 +480,15 @@ export default function Home() {
                                 {isHealed ? (
                                   <>
                                     <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/checkout (200 OK) - Order Created</div>
-                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/webhook (200 OK) - Signature Validated</div>
-                                    <div style={{ color: "var(--success-color)", marginBottom: "12px" }}>✓ POST /api/webhook (400 Bad Request) - Invalid Signature Rejected</div>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/webhook (200 OK) - {attackVector === "signature" ? "Signature Validated" : attackVector === "idempotency" ? "Idempotency Enforced" : "Amount Validated"}</div>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "12px" }}>✓ POST /api/webhook (400 Bad Request) - {attackVector === "signature" ? "Invalid Signature Rejected" : attackVector === "idempotency" ? "Duplicate Request Rejected" : "Invalid Decimal Rejected"}</div>
                                     <div style={{ color: "var(--text-secondary)" }}>Test Suites: 1 passed, 1 total<br/>Tests: 3 passed, 3 total<br/>Time: 1.452s</div>
                                   </>
                                 ) : (
                                   <>
                                     <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/checkout (200 OK) - Order Created</div>
-                                    <div style={{ color: "var(--error-color)", marginBottom: "4px" }}>✗ POST /api/webhook (500 Error) - Missing Signature Validation</div>
-                                    <div style={{ color: "var(--error-color)", marginBottom: "12px" }}>✗ POST /api/webhook (200 OK) - FORGED PAYLOAD ACCEPTED (CRITICAL)</div>
+                                    <div style={{ color: "var(--error-color)", marginBottom: "4px" }}>✗ POST /api/webhook (500 Error) - {attackVector === "signature" ? "Missing Signature Validation" : attackVector === "idempotency" ? "Missing Idempotency Key" : "Decimal Mismatch"}</div>
+                                    <div style={{ color: "var(--error-color)", marginBottom: "12px" }}>✗ POST /api/webhook (200 OK) - {attackVector === "signature" ? "FORGED PAYLOAD ACCEPTED (CRITICAL)" : attackVector === "idempotency" ? "DUPLICATE ORDER CREATED (CRITICAL)" : "INVALID CURRENCY ACCEPTED (CRITICAL)"}</div>
                                     <div style={{ color: "var(--text-secondary)" }}>Test Suites: 1 failed, 1 total<br/>Tests: 1 passed, 2 failed, 3 total<br/>Time: 0.821s</div>
                                   </>
                                 )}
@@ -457,9 +506,23 @@ export default function Home() {
                     <h3 style={{ display: "flex", alignItems: "center", gap: "10px", margin: "0 0 12px 0", fontSize: "16px" }}>
                       <AlertTriangle size={18} color="var(--error-color)" /> Chaos Engine
                     </h3>
-                    <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "24px", lineHeight: "1.5" }}>
+                    <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "16px", lineHeight: "1.5" }}>
                       Inject synthetic failures to test the resilience of the generated architecture.
                     </p>
+                    
+                    <div style={{ marginBottom: "20px" }}>
+                      <label style={{ display: "block", fontSize: "13px", color: "var(--text-secondary)", marginBottom: "8px" }}>Select Attack Vector:</label>
+                      <select 
+                        value={attackVector}
+                        onChange={(e) => { setAttackVector(e.target.value); setIsHealed(false); setLogs([]); }}
+                        style={{ width: "100%", padding: "10px", borderRadius: "6px", backgroundColor: "rgba(0,0,0,0.5)", border: "1px solid var(--border-color)", color: "white", fontSize: "14px", outline: "none" }}
+                      >
+                        <option value="signature">Vector 1: Webhook Signature Forgery (Critical)</option>
+                        <option value="idempotency">Vector 2: Network Timeout (Idempotency)</option>
+                        <option value="currency">Vector 3: Currency Decimal Manipulation</option>
+                      </select>
+                    </div>
+
                     <button 
                       className="btn" 
                       style={{ backgroundColor: "rgba(239, 68, 68, 0.1)", color: "var(--error-color)", border: "1px solid rgba(239, 68, 68, 0.3)", width: "100%", justifyContent: "center", padding: "14px", borderRadius: "8px", fontWeight: 600, cursor: (isSimulating || isHealed) ? "not-allowed" : "pointer", opacity: (isSimulating || isHealed) ? 0.5 : 1, transition: "all 0.2s" }}
@@ -489,57 +552,68 @@ export default function Home() {
           ) : (
             <>
               <header style={{ marginBottom: "40px" }}>
-                <h1 style={{ fontSize: "32px", letterSpacing: "-0.5px", marginBottom: "8px" }}>My Snippets</h1>
-                <p style={{ color: "var(--text-secondary)", fontSize: "16px" }}>Access your previously generated integration architectures.</p>
+                <h1 style={{ fontSize: "32px", letterSpacing: "-0.5px", marginBottom: "8px" }}>Instant Blueprints</h1>
+                <p style={{ color: "var(--text-secondary)", fontSize: "16px" }}>Bypass LLM generation. Deploy pre-compiled, statically audited Razorpay architectures instantly.</p>
               </header>
 
-              {savedSnippets.length === 0 ? (
-                <div style={{ padding: "80px", textAlign: "center", background: "rgba(0,0,0,0.2)", borderRadius: "16px", border: "1px dashed rgba(255,255,255,0.1)" }}>
-                  <FileCode2 size={48} color="var(--text-secondary)" style={{ margin: "0 auto 20px", opacity: 0.3 }} />
-                  <h3 style={{ marginBottom: "12px", fontSize: "20px" }}>No snippets saved yet</h3>
-                  <p style={{ color: "var(--text-secondary)", fontSize: "15px" }}>Generate your first integration in the Copilot to see it here.</p>
-                </div>
-              ) : (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: "24px" }}>
-                  {savedSnippets.map((snippet) => (
-                    <div 
-                      key={snippet.id} 
-                      className="card" 
-                      onClick={() => loadSnippet(snippet)}
-                      style={{ cursor: "pointer", display: "flex", flexDirection: "column", background: "rgba(255,255,255,0.02)" }}
-                    >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
-                        <div style={{ display: "flex", gap: "8px", alignItems: "center", background: "rgba(255,255,255,0.05)", padding: "6px 12px", borderRadius: "20px", fontSize: "13px", fontWeight: 500 }}>
-                          <Code size={14} /> {snippet.stack.split(" ")[0]}
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "13px" }}>
-                          <Clock size={14} /> {snippet.date}
-                        </div>
-                      </div>
-                      
-                      <h3 style={{ fontSize: "18px", marginBottom: "16px", lineHeight: "1.4" }}>
-                        "{snippet.prompt.length > 65 ? snippet.prompt.substring(0, 65) + "..." : snippet.prompt}"
-                      </h3>
-                      
-                      <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginBottom: "28px", flex: 1, lineHeight: "1.6" }}>
-                        {snippet.result.plan || "Integration files generated successfully."}
-                      </p>
-                      
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--border-color)", paddingTop: "20px" }}>
-                        <span style={{ fontSize: "14px", color: "var(--text-primary)", fontWeight: 500 }}>{snippet.result.files.length} Files</span>
-                        <button 
-                          onClick={(e) => deleteSnippet(snippet.id, e)}
-                          className="btn btn-secondary"
-                          style={{ padding: "8px", borderRadius: "8px", color: "var(--text-secondary)" }}
-                          title="Delete Snippet"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: "24px" }}>
+                <div className="card" style={{ cursor: "pointer", display: "flex", flexDirection: "column", background: "rgba(255,255,255,0.02)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center", background: "rgba(88, 166, 255, 0.1)", color: "var(--accent-color)", padding: "6px 12px", borderRadius: "20px", fontSize: "13px", fontWeight: 500, border: "1px solid rgba(88, 166, 255, 0.2)" }}>
+                      <Code size={14} /> Next.js + Node
                     </div>
-                  ))}
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--success-color)", fontSize: "13px" }}>
+                      <ShieldCheck size={14} /> Audited
+                    </div>
+                  </div>
+                  <h3 style={{ fontSize: "18px", marginBottom: "12px" }}>Standard Checkout</h3>
+                  <p style={{ color: "var(--text-secondary)", fontSize: "14px", lineHeight: "1.5", flex: 1, marginBottom: "24px" }}>
+                    Full-stack architecture for standard Razorpay checkout including dynamic order creation, frontend payment UI, and cryptographically secure webhook handlers.
+                  </p>
+                  <div style={{ display: "flex", gap: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "auto" }}>
+                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => setPrompt("Generate a secure Standard Checkout integration")}>Deploy to Vercel</button>
+                     <button className="btn btn-secondary" style={{ flex: 1, justifyContent: "center", padding: "10px" }}>View Source</button>
+                  </div>
                 </div>
-              )}
+
+                <div className="card" style={{ cursor: "pointer", display: "flex", flexDirection: "column", background: "rgba(255,255,255,0.02)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center", background: "rgba(88, 166, 255, 0.1)", color: "var(--accent-color)", padding: "6px 12px", borderRadius: "20px", fontSize: "13px", fontWeight: 500, border: "1px solid rgba(88, 166, 255, 0.2)" }}>
+                      <Code size={14} /> React Native + Node
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--success-color)", fontSize: "13px" }}>
+                      <ShieldCheck size={14} /> Audited
+                    </div>
+                  </div>
+                  <h3 style={{ fontSize: "18px", marginBottom: "12px" }}>Mobile Subscriptions</h3>
+                  <p style={{ color: "var(--text-secondary)", fontSize: "14px", lineHeight: "1.5", flex: 1, marginBottom: "24px" }}>
+                    Recurring payment architecture with automatic billing cycles, deep linking for mobile SDKs, and webhook idempotency for unstable mobile networks.
+                  </p>
+                  <div style={{ display: "flex", gap: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "auto" }}>
+                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => setPrompt("Generate a robust Subscription Webhook handler")}>Deploy Backend</button>
+                     <button className="btn btn-secondary" style={{ flex: 1, justifyContent: "center", padding: "10px" }}>View Source</button>
+                  </div>
+                </div>
+
+                <div className="card" style={{ cursor: "pointer", display: "flex", flexDirection: "column", background: "rgba(255,255,255,0.02)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center", background: "rgba(88, 166, 255, 0.1)", color: "var(--accent-color)", padding: "6px 12px", borderRadius: "20px", fontSize: "13px", fontWeight: 500, border: "1px solid rgba(88, 166, 255, 0.2)" }}>
+                      <Code size={14} /> Python / Django
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--success-color)", fontSize: "13px" }}>
+                      <ShieldCheck size={14} /> Audited
+                    </div>
+                  </div>
+                  <h3 style={{ fontSize: "18px", marginBottom: "12px" }}>B2B Payment Links</h3>
+                  <p style={{ color: "var(--text-secondary)", fontSize: "14px", lineHeight: "1.5", flex: 1, marginBottom: "24px" }}>
+                    Automated invoice and payment link generation architecture. Includes auto-reminders and fractional currency rounding protection.
+                  </p>
+                  <div style={{ display: "flex", gap: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "auto" }}>
+                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }}>Deploy to Render</button>
+                     <button className="btn btn-secondary" style={{ flex: 1, justifyContent: "center", padding: "10px" }}>View Source</button>
+                  </div>
+                </div>
+              </div>
             </>
           )}
         </div>
