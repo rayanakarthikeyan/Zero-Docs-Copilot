@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Terminal, Code, Activity, ShieldCheck, Zap, RefreshCw, AlertTriangle, ShieldAlert, FileCode2, Copy, CheckCircle, Download, FileArchive, X } from 'lucide-react';
 import JSZip from 'jszip';
-import { blueprints } from "./blueprints";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<"copilot" | "snippets">("copilot");
@@ -99,8 +98,9 @@ export default function Home() {
     setCurrentView("copilot");
   };
 
-  const handleGenerate = async () => {
-    if (!prompt) return;
+  const handleGenerate = async (overridePrompt?: string) => {
+    const activePrompt = overridePrompt || prompt;
+    if (!activePrompt) return;
     setIsGenerating(true);
     setResult(null);
     setIsHealed(false);
@@ -108,8 +108,8 @@ export default function Home() {
     setActiveTab("code");
     
     let provider = "Razorpay";
-    if (prompt.toLowerCase().includes("stripe")) provider = "Stripe";
-    else if (prompt.toLowerCase().includes("paypal")) provider = "PayPal";
+    if (activePrompt.toLowerCase().includes("stripe")) provider = "Stripe";
+    else if (activePrompt.toLowerCase().includes("paypal")) provider = "PayPal";
 
     const loadingSteps = [
       `Fetching Live ${provider} API Schemas...`,
@@ -130,14 +130,14 @@ export default function Home() {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, stack }),
+        body: JSON.stringify({ prompt: activePrompt, stack }),
       });
       const data = await response.json();
       if (data.error) {
         alert("Generation failed: " + data.error);
       } else {
         setResult(data);
-        saveSnippet(data, prompt, stack);
+        saveSnippet(data, activePrompt, stack);
       }
     } catch (error: any) {
       alert("Error generating code: " + error.message);
@@ -600,7 +600,13 @@ export default function Home() {
                     Full-stack architecture for standard Razorpay checkout including dynamic order creation, frontend payment UI, and cryptographically secure webhook handlers.
                   </p>
                   <div style={{ display: "flex", gap: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "auto" }}>
-                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { setPrompt("Generate a secure Standard Checkout integration"); setResult(blueprints.standardCheckout); setIsHealed(false); setLogs([]); setAttackVector("signature"); setActiveTab("code"); setCurrentView("copilot"); }}>Load Blueprint</button>
+                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { 
+                        const p = "Generate a secure Standard Checkout integration";
+                        setPrompt(p); 
+                        setAttackVector("signature"); 
+                        setCurrentView("copilot");
+                        handleGenerate(p);
+                     }}>Load Blueprint</button>
                   </div>
                 </div>
 
@@ -618,7 +624,13 @@ export default function Home() {
                     Recurring payment architecture with automatic billing cycles, deep linking for mobile SDKs, and webhook idempotency for unstable mobile networks.
                   </p>
                   <div style={{ display: "flex", gap: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "auto" }}>
-                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { setPrompt("Generate a robust Subscription Webhook handler"); setResult(blueprints.mobileSubscription); setIsHealed(false); setLogs([]); setAttackVector("idempotency"); setActiveTab("code"); setCurrentView("copilot"); }}>Load Blueprint</button>
+                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { 
+                        const p = "Generate a robust Subscription Webhook handler";
+                        setPrompt(p); 
+                        setAttackVector("idempotency"); 
+                        setCurrentView("copilot");
+                        handleGenerate(p);
+                     }}>Load Blueprint</button>
                   </div>
                 </div>
 
@@ -636,7 +648,13 @@ export default function Home() {
                     Automated invoice and payment link generation architecture. Includes auto-reminders and fractional currency rounding protection.
                   </p>
                   <div style={{ display: "flex", gap: "12px", borderTop: "1px solid var(--border-color)", paddingTop: "20px", marginTop: "auto" }}>
-                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { setPrompt("Generate a B2B Payment Links architecture"); setResult(blueprints.b2bLinks); setIsHealed(false); setLogs([]); setAttackVector("currency"); setActiveTab("code"); setCurrentView("copilot"); }}>Load Blueprint</button>
+                     <button className="btn btn-primary" style={{ flex: 1, justifyContent: "center", padding: "10px" }} onClick={() => { 
+                        const p = "Generate a B2B Payment Links architecture";
+                        setPrompt(p); 
+                        setAttackVector("currency"); 
+                        setCurrentView("copilot");
+                        handleGenerate(p);
+                     }}>Load Blueprint</button>
                   </div>
                 </div>
               </div>
