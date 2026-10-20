@@ -18,7 +18,7 @@ export default function Home() {
   const [activeFile, setActiveFile] = useState(0);
   const [showAbout, setShowAbout] = useState(false);
   
-  // Chaos Engine State
+  // Revision Demo State
   const [isHealed, setIsHealed] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -112,8 +112,8 @@ export default function Home() {
     else if (activePrompt.toLowerCase().includes("paypal")) provider = "PayPal";
 
     const loadingSteps = [
-      `Fetching Live ${provider} API Schemas...`,
-      "Synchronizing RAG Knowledge Base...",
+      `Preparing ${provider} generation prompt...`,
+      "Waiting for model response...",
       "Analyzing webhook architecture...",
       "Generating Node.js SDK integration...",
       "Running static security analysis...",
@@ -169,21 +169,21 @@ export default function Home() {
         const auditResult = await response.json();
         
         if (auditResult.status === "passed") {
-            await addLog("[SUCCESS] Code passed security audit. No vulnerabilities found.");
+            await addLog("[SUCCESS] Selected static pattern check passed. Runtime security remains unverified.");
             setIsSimulating(false);
             return;
         }
         
         await addLog(`[CRASH] ${auditResult.vulnerability}`, 1000);
-        await addLog("[SYSTEM] Deploying AI Security Agent to patch vulnerability...", 1500);
+        await addLog("[SYSTEM] Requesting a candidate code revision...", 1500);
         
         // Check if we are running a blueprint (which is statically hardcoded) to avoid burning API calls,
         // but if it's dynamic generation, use the real agent.
         if (result.healedFiles && result.plan.includes('Instantly deployed')) {
             await addLog("[AGENT] Intercepting vulnerability stack trace...", 1000);
-            await addLog("[AGENT] Synthesizing cryptographically secure patch...", 1000);
+            await addLog("[AGENT] Selecting the supplied reference revision...", 1000);
             setIsHealed(true);
-            await addLog("[SUCCESS] Patch deployed. Architecture secured.");
+            await addLog("[SUCCESS] Reference revision selected. No code was deployed or security-verified.");
         } else {
             const healResponse = await fetch('/api/heal', {
                 method: 'POST',
@@ -195,10 +195,10 @@ export default function Home() {
             
             if (healData.error) throw new Error(healData.error);
             
-            setResult(prev => ({ ...prev, healedFiles: healData.healedFiles }));
+            setResult((prev: any) => ({ ...prev, healedFiles: healData.healedFiles }));
             setIsHealed(true);
             await addLog("[AGENT] " + healData.plan, 800);
-            await addLog("[SUCCESS] Security patch applied. Vulnerability mitigated.");
+            await addLog("[SUCCESS] Model revision received. Review and test before use.");
         }
 
     } catch (e: any) {
@@ -282,7 +282,7 @@ export default function Home() {
 
       <main className="main-content">
         <header className="topbar" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div className="topbar-metrics" style={{ display: "flex", gap: "24px", cursor: "pointer" }} onClick={() => alert("Source Information:\n\nThese metrics are live simulated telemetry representing a production environment scaling to process thousands of Razorpay webhooks per second.")}>
+          <span style={{ fontSize: "12px", color: "var(--text-secondary)" }}>Simulated UI counters</span><div className="topbar-metrics" style={{ display: "flex", gap: "24px", cursor: "pointer" }} onClick={() => alert("Source Information:\n\nThese metrics are live simulated sample counters for a UI demonstration. They are not measured production traffic or security outcomes.")}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--success-color)", fontSize: "13px", fontWeight: 600, background: "rgba(46, 160, 67, 0.1)", padding: "6px 12px", borderRadius: "20px", border: "1px solid rgba(46, 160, 67, 0.2)" }}>
               <Activity size={14} /> Webhooks Secured: {telemetry.webhooks.toLocaleString()}
             </div>
@@ -363,7 +363,7 @@ export default function Home() {
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <button 
                     className="btn btn-primary" 
-                    onClick={handleGenerate} 
+                    onClick={() => handleGenerate()}
                     disabled={isGenerating || !prompt}
                     style={{ padding: "12px 24px", fontSize: "15px", minWidth: "280px", justifyContent: "center" }}
                   >
@@ -387,7 +387,7 @@ export default function Home() {
                         onClick={() => setActiveTab("preview")} 
                         style={{ padding: "16px 24px", background: activeTab === "preview" ? "rgba(255,255,255,0.03)" : "transparent", border: "none", borderBottom: activeTab === "preview" ? "2px solid var(--text-primary)" : "2px solid transparent", color: activeTab === "preview" ? "white" : "var(--text-secondary)", cursor: "pointer", flex: 1, fontSize: "14px", fontWeight: 500, transition: "all 0.2s" }}
                       >
-                        Security Audit
+                        Static Pattern Checks
                       </button>
                       <div style={{ marginLeft: "auto", display: "flex", gap: "8px", paddingRight: "16px" }}>
                         <button onClick={() => {
@@ -437,7 +437,7 @@ export default function Home() {
                           
                           <div style={{ padding: "16px", borderBottom: "1px solid var(--border-color)", display: "flex", gap: "16px", alignItems: "center", background: "rgba(88, 166, 255, 0.05)" }}>
                             <div style={{ flex: 1 }}>
-                              <div style={{ fontSize: "12px", color: "var(--text-secondary)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 600 }}>1-Click CLI Deployment</div>
+                              <div style={{ fontSize: "12px", color: "var(--text-secondary)", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 600 }}>Example setup command (CLI not implemented)</div>
                               <div style={{ background: "#000", padding: "10px 16px", borderRadius: "6px", border: "1px solid rgba(88, 166, 255, 0.2)", display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "var(--font-mono)", fontSize: "13px" }}>
                                 <span style={{ color: "#e6edf3" }}>npx @zero-docs/cli init --blueprint={currentFiles?.[0]?.name?.replace('.tsx', '').toLowerCase() || 'demo'}</span>
                                 <button onClick={() => copyToClipboard('npx @zero-docs/cli init --blueprint=demo')} style={{ background: "transparent", border: "none", color: "var(--accent-color)", cursor: "pointer" }}><Copy size={14} /></button>
@@ -462,7 +462,7 @@ export default function Home() {
                           <h3 style={{ margin: 0, fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
                             <ShieldAlert size={18} color="var(--accent-color)" /> Static Code Analyzer & Linter
                           </h3>
-                          <span style={{ fontSize: "12px", background: "rgba(255,255,255,0.1)", padding: "4px 8px", borderRadius: "12px" }}>Automated Security Audit</span>
+                          <span style={{ fontSize: "12px", background: "rgba(255,255,255,0.1)", padding: "4px 8px", borderRadius: "12px" }}>Automated Static Pattern Checks</span>
                         </div>
                         <div style={{ padding: "32px", display: "flex", flexDirection: "column", gap: "16px", flex: 1 }}>
                           
@@ -470,7 +470,7 @@ export default function Home() {
                             {isHealed ? <ShieldCheck size={24} color="var(--success-color)" style={{ marginTop: "2px" }} /> : <AlertTriangle size={24} color="var(--error-color)" style={{ marginTop: "2px" }} />}
                             <div>
                               <h4 style={{ margin: "0 0 8px 0", fontSize: "15px", color: isHealed ? "var(--success-color)" : "var(--error-color)" }}>
-                                {isHealed ? "Rule Passed: Webhook Signature Verified" : "Rule Failed: Missing Webhook Signature"}
+                                {isHealed ? "Revision selected: verify webhook behavior" : "Example check: webhook signature pattern"}
                               </h4>
                               <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.5" }}>
                                 {isHealed 
@@ -479,7 +479,7 @@ export default function Home() {
                               </p>
                               {!isHealed && (
                                 <div style={{ marginTop: "12px", display: "inline-block", background: "rgba(255,0,0,0.1)", color: "var(--error-color)", padding: "4px 8px", borderRadius: "4px", fontSize: "12px", fontWeight: "bold" }}>
-                                  ACTION REQUIRED: Deploy Chaos Engine to Auto-Heal
+                                  ACTION REQUIRED: Deploy Revision Demo to Request Revision
                                 </div>
                               )}
                             </div>
@@ -489,7 +489,7 @@ export default function Home() {
                             {isHealed ? <CheckCircle size={24} color="var(--success-color)" style={{ marginTop: "2px" }} /> : <AlertTriangle size={24} color="var(--error-color)" style={{ marginTop: "2px" }} />}
                             <div>
                               <h4 style={{ margin: "0 0 8px 0", fontSize: "15px", color: isHealed ? "var(--success-color)" : "var(--error-color)" }}>
-                                {isHealed ? "Rule Passed: Idempotency Keys Enforced" : "Rule Failed: Missing Idempotency Keys"}
+                                {isHealed ? "Revision selected: verify duplicate handling" : "Example check: idempotency pattern"}
                               </h4>
                               <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary)", lineHeight: "1.5" }}>
                                 {isHealed 
@@ -508,17 +508,17 @@ export default function Home() {
                               <div style={{ background: "#000", padding: "16px", borderRadius: "8px", fontFamily: "var(--font-mono)", fontSize: "13px", color: "#e6edf3", border: "1px solid var(--border-color)" }}>
                                 {isHealed ? (
                                   <>
-                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/checkout (200 OK) - Order Created</div>
-                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/webhook (200 OK) - {attackVector === "signature" ? "Signature Validated" : attackVector === "idempotency" ? "Idempotency Enforced" : "Amount Validated"}</div>
-                                    <div style={{ color: "var(--success-color)", marginBottom: "12px" }}>✓ POST /api/webhook (400 Bad Request) - {attackVector === "signature" ? "Invalid Signature Rejected" : attackVector === "idempotency" ? "Duplicate Request Rejected" : "Invalid Decimal Rejected"}</div>
-                                    <div style={{ color: "var(--text-secondary)" }}>Test Suites: 1 passed, 1 total<br/>Tests: 3 passed, 3 total<br/>Time: 1.452s</div>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>âœ“ POST /api/checkout (200 OK) - Order Created</div>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>âœ“ POST /api/webhook (200 OK) - {attackVector === "signature" ? "Signature Validated" : attackVector === "idempotency" ? "Idempotency Enforced" : "Amount Validated"}</div>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "12px" }}>âœ“ POST /api/webhook (400 Bad Request) - {attackVector === "signature" ? "Invalid Signature Rejected" : attackVector === "idempotency" ? "Duplicate Request Rejected" : "Invalid Decimal Rejected"}</div>
+                                    <div style={{ color: "var(--text-secondary)" }}>Illustrative scenario only. No generated code was executed; no runtime test count or timing is available.</div>
                                   </>
                                 ) : (
                                   <>
-                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>✓ POST /api/checkout (200 OK) - Order Created</div>
-                                    <div style={{ color: "var(--error-color)", marginBottom: "4px" }}>✗ POST /api/webhook (500 Error) - {attackVector === "signature" ? "Missing Signature Validation" : attackVector === "idempotency" ? "Missing Idempotency Key" : "Decimal Mismatch"}</div>
-                                    <div style={{ color: "var(--error-color)", marginBottom: "12px" }}>✗ POST /api/webhook (200 OK) - {attackVector === "signature" ? "FORGED PAYLOAD ACCEPTED (CRITICAL)" : attackVector === "idempotency" ? "DUPLICATE ORDER CREATED (CRITICAL)" : "INVALID CURRENCY ACCEPTED (CRITICAL)"}</div>
-                                    <div style={{ color: "var(--text-secondary)" }}>Test Suites: 1 failed, 1 total<br/>Tests: 1 passed, 2 failed, 3 total<br/>Time: 0.821s</div>
+                                    <div style={{ color: "var(--success-color)", marginBottom: "4px" }}>âœ“ POST /api/checkout (200 OK) - Order Created</div>
+                                    <div style={{ color: "var(--error-color)", marginBottom: "4px" }}>âœ— POST /api/webhook (500 Error) - {attackVector === "signature" ? "Missing Signature Validation" : attackVector === "idempotency" ? "Missing Idempotency Key" : "Decimal Mismatch"}</div>
+                                    <div style={{ color: "var(--error-color)", marginBottom: "12px" }}>âœ— POST /api/webhook (200 OK) - {attackVector === "signature" ? "FORGED PAYLOAD ACCEPTED (CRITICAL)" : attackVector === "idempotency" ? "DUPLICATE ORDER CREATED (CRITICAL)" : "INVALID CURRENCY ACCEPTED (CRITICAL)"}</div>
+                                    <div style={{ color: "var(--text-secondary)" }}>Illustrative scenario only. Run the executable reference tests locally; generated output needs separate verification.</div>
                                   </>
                                 )}
                               </div>
@@ -530,10 +530,10 @@ export default function Home() {
                     )}
                   </div>
 
-                  {/* Chaos Engine Panel */}
+                  {/* Revision Demo Panel */}
                   <div className="card" style={{ display: "flex", flexDirection: "column", background: "linear-gradient(180deg, rgba(20,20,20,1) 0%, rgba(10,10,10,1) 100%)" }}>
                     <h3 style={{ display: "flex", alignItems: "center", gap: "10px", margin: "0 0 12px 0", fontSize: "16px" }}>
-                      <AlertTriangle size={18} color="var(--error-color)" /> Chaos Engine
+                      <AlertTriangle size={18} color="var(--error-color)" /> Revision Demo
                     </h3>
                     <p style={{ fontSize: "14px", color: "var(--text-secondary)", marginBottom: "16px", lineHeight: "1.5" }}>
                       Inject synthetic failures to test the resilience of the generated architecture.
@@ -582,7 +582,7 @@ export default function Home() {
             <>
               <header style={{ marginBottom: "40px" }}>
                 <h1 style={{ fontSize: "32px", letterSpacing: "-0.5px", marginBottom: "8px" }}>Instant Blueprints</h1>
-                <p style={{ color: "var(--text-secondary)", fontSize: "16px" }}>Bypass LLM generation. Deploy pre-compiled, statically audited Razorpay architectures instantly.</p>
+                <p style={{ color: "var(--text-secondary)", fontSize: "16px" }}>Bypass LLM generation. Deploy example Razorpay integration templates for local review.</p>
               </header>
 
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: "24px" }}>
@@ -592,7 +592,7 @@ export default function Home() {
                       <Code size={14} /> Next.js + Node
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--success-color)", fontSize: "13px" }}>
-                      <ShieldCheck size={14} /> Audited
+                      <ShieldCheck size={14} /> Example template
                     </div>
                   </div>
                   <h3 style={{ fontSize: "18px", marginBottom: "12px" }}>Standard Checkout</h3>
@@ -616,7 +616,7 @@ export default function Home() {
                       <Code size={14} /> React Native + Node
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--success-color)", fontSize: "13px" }}>
-                      <ShieldCheck size={14} /> Audited
+                      <ShieldCheck size={14} /> Example template
                     </div>
                   </div>
                   <h3 style={{ fontSize: "18px", marginBottom: "12px" }}>Mobile Subscriptions</h3>
@@ -640,7 +640,7 @@ export default function Home() {
                       <Code size={14} /> Python / Django
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--success-color)", fontSize: "13px" }}>
-                      <ShieldCheck size={14} /> Audited
+                      <ShieldCheck size={14} /> Example template
                     </div>
                   </div>
                   <h3 style={{ fontSize: "18px", marginBottom: "12px" }}>B2B Payment Links</h3>
@@ -681,7 +681,7 @@ export default function Home() {
                 Created by <strong>Rayana Karthikeyan</strong>, Zero-Docs AI was born from a fundamental frustration: developers spend more time reading documentation and debugging cryptic webhook signatures than they do building actual products.
               </p>
               <p style={{ marginBottom: "24px" }}>
-                I recognized that standard AI wrappers were failing to solve this. They could generate basic scripts, but they could not output complex, multi-file architectures, nor could they guarantee cryptographic security. Zero-Docs AI was engineered to bridge this "Integration Chasm" by autonomously generating, compiling, and security-auditing enterprise-grade architectures on the fly.
+                I recognized that standard AI wrappers were failing to solve this. They could generate basic scripts, but they could not output complex, multi-file architectures, nor could they guarantee cryptographic security. Zero-Docs AI was engineered to bridge this "Integration Chasm" by generating and applying static pattern checks to candidate integration code on the fly.
               </p>
               
               <div style={{ background: "rgba(88, 166, 255, 0.05)", border: "1px solid rgba(88, 166, 255, 0.2)", padding: "20px", borderRadius: "8px" }}>
@@ -697,7 +697,7 @@ export default function Home() {
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <ShieldCheck size={16} color="var(--success-color)" style={{ marginTop: "4px", flexShrink: 0 }} />
-                    <span style={{ fontSize: "13px" }}>True Multi-Agent Chaos Engine for static security auditing and auto-healing</span>
+                    <span style={{ fontSize: "13px" }}>Prompt-driven Revision Demo for static security auditing and auto-healing</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
                     <Code size={16} color="var(--success-color)" style={{ marginTop: "4px", flexShrink: 0 }} />
