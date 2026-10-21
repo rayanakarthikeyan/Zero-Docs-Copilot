@@ -23,6 +23,9 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Executable reference webhook tests
+      run: npm test
+
     - name: Build Next.js application
       run: npm run build
       env:

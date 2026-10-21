@@ -3,11 +3,18 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
   try {
     const { files, attackVector } = await req.json();
-    
-    if (!files || !Array.isArray(files)) {
+
+    if (!Array.isArray(files) || files.length > 20 || !files.every((f: unknown) =>
+      typeof f === 'object' && f !== null && 'name' in f && 'content' in f &&
+      typeof f.name === 'string' && typeof f.content === 'string' && f.content.length <= 200000)) {
       return NextResponse.json({ error: "Invalid files payload" }, { status: 400 });
     }
 
+    if (!['signature', 'idempotency', 'currency'].includes(attackVector)) {
+      return NextResponse.json({ error: "Unsupported check" }, { status: 400 });
+    }
+    const scope = { method: 'static_substring_heuristic', code_executed: false,
+      security_verified: false, note: 'A match does not establish runtime correctness or payment security.' };
     let isVulnerable = false;
     let vulnerabilityReport = "";
 
@@ -19,7 +26,7 @@ export async function POST(req: Request) {
     if (attackVector === "signature") {
       const hasHmac = codeToScan.includes('crypto.createHmac') || codeToScan.includes('hmac');
       const hasSignatureHeader = codeToScan.includes('x-razorpay-signature');
-      
+
       if (!hasHmac || !hasSignatureHeader) {
         isVulnerable = true;
         vulnerabilityReport = "[FATAL] Webhook Signature Mismatch: Unauthorized access attempt detected. Missing crypto.createHmac verification.";
@@ -46,13 +53,13 @@ export async function POST(req: Request) {
     }
 
     if (isVulnerable) {
-      return NextResponse.json({ 
-        status: "failed", 
-        vulnerability: vulnerabilityReport 
+      return NextResponse.json({
+        status: "failed",
+        vulnerability: vulnerabilityReport, scope
       });
     }
 
-    return NextResponse.json({ status: "passed" });
+    return NextResponse.json({ status: "passed", scope });
 
   } catch (error: any) {
     console.error("Audit Error:", error);
